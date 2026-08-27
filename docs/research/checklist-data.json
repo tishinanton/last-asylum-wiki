@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "dataAsOf": "2026-08-27",
+  "locales": {
+    "primary": "ru",
+    "secondary": "en"
+  },
+  "reset": {
+    "time": "00:00:00",
+    "timeZone": "UTC",
+    "configurable": true
+  },
+  "events": {
+    "alliance-duel": {
+      "resetTimeZone": "UTC",
+      "resetTimeZoneVerified": true,
+      "activeIsoWeekdays": [1, 2, 3, 4, 5, 6],
+      "phases": [
+        {"isoWeekday": 1, "id": "AD-D1-RAVEN"},
+        {"isoWeekday": 2, "id": "AD-D2-CONSTRUCTION"},
+        {"isoWeekday": 3, "id": "AD-D3-TECH"},
+        {"isoWeekday": 4, "id": "AD-D4-HERO"},
+        {"isoWeekday": 5, "id": "AD-D5-PREPARATION"},
+        {"isoWeekday": 6, "id": "AD-D6-RAID"}
+      ],
+      "sourceIds": ["S1"]
+    },
+    "survival-battle": {
+      "resetTime": "00:00:00",
+      "resetTimeZone": null,
+      "fallbackTimeZone": "UTC",
+      "resetTimeZoneVerified": false,
+      "cycleAnchor": null,
+      "cycleAnchorConfigurable": true,
+      "roundDurationMinutes": 240,
+      "roundOffsetsMinutes": [0, 240, 480, 720, 960, 1200],
+      "cycle": [
+        {"day": 1, "themes": ["SB-BUILD", "SB-TRAIN", "SB-RESEARCH", "SB-RAVEN", "SB-HEROES", "SB-BUILD"]},
+        {"day": 2, "themes": ["SB-HEROES", "SB-BUILD", "SB-TRAIN", "SB-RESEARCH", "SB-RAVEN", "SB-HEROES"]},
+        {"day": 3, "themes": ["SB-BUILD", "SB-TRAIN", "SB-RESEARCH", "SB-RAVEN", "SB-HEROES", "SB-BUILD"]},
+        {"day": 4, "themes": ["SB-TRAIN", "SB-RESEARCH", "SB-RAVEN", "SB-HEROES", "SB-BUILD", "SB-TRAIN"]},
+        {"day": 5, "themes": ["SB-RESEARCH", "SB-RAVEN", "SB-HEROES", "SB-BUILD", "SB-TRAIN", "SB-RESEARCH"]},
+        {"day": 6, "themes": ["SB-RAVEN", "SB-HEROES", "SB-BUILD", "SB-TRAIN", "SB-RESEARCH", "SB-RAVEN"]},
+        {"day": 7, "themes": ["SB-HEROES", "SB-BUILD", "SB-TRAIN", "SB-RESEARCH", "SB-RAVEN", "SB-HEROES"]}
+      ],
+      "sourceIds": ["S2", "S4"],
+      "verificationIds": ["VB-SB-001", "VB-SB-002"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "ad-every-check-phase",
+      "eventId": "alliance-duel",
+      "schedule": "active-day",
+      "label": {"ru": "Проверить текущую фазу и время до сброса", "en": "Check the current phase and time until reset"},
+      "sourceIds": ["S1"],
+      "confidence": "high"
+    },
+    {
+      "id": "ad-every-claim-milestones",
+      "eventId": "alliance-duel",
+      "schedule": "active-day",
+      "label": {"ru": "Забрать доступные ежедневные награды за прогресс", "en": "Claim available Daily Milestone Rewards"},
+      "sourceIds": ["S1"],
+      "confidence": "medium",
+      "verificationIds": ["VB-AD-004"]
+    },
+    {
+      "id": "ad-sunday-stage-falcon",
+      "eventId": "alliance-duel",
+      "schedule": "sunday-preparation",
+      "label": {"ru": "Завершить задания «Сокол», не забирая их", "en": "Complete Falcon Tasks without claiming them"},
+      "sourceIds": ["S1"],
+      "confidence": "medium",
+      "verificationIds": ["VB-AD-006"]
+    },
+    {
+      "id": "ad-sunday-dispatch-gathering",
+      "eventId": "alliance-duel",
+      "schedule": "sunday-preparation",
+      "label": {"ru": "Отправить отряды за зерном, древесиной и травами", "en": "Dispatch marches for Grain, Timber, and Herbs"},
+      "sourceIds": ["S1"],
+      "confidence": "medium",
+      "verificationIds": ["VB-AD-006"]
+    },
+    {
+      "id": "ad-d1-spend-raven-resources",
+      "eventId": "alliance-duel",
+      "phaseId": "AD-D1-RAVEN",
+      "label": {"ru": "Потратить запланированные энергию, плоды и эссенции Ворона", "en": "Spend planned Stamina, Raven Fruit, and Raven Essence"},
+      "overlapGroups": ["stamina", "raven-fruit"],
+      "sourceIds": ["S1"],
+      "confidence": "high"
+    },
+    {
+      "id": "ad-d2-use-construction",
+      "eventId": "alliance-duel",
+      "phaseId": "AD-D2-CONSTRUCTION",
+      "label": {"ru": "Завершить здания и применить строительные ускорения", "en": "Finish buildings and use construction speedups"},
+      "overlapGroups": ["construction-speedup", "building-might"],
+      "sourceIds": ["S1"],
+      "confidence": "high"
+    },
+    {
+      "id": "ad-d2-use-ur-actions",
+      "eventId": "alliance-duel",
+      "phaseId": "AD-D2-CONSTRUCTION",
+      "label": {"ru": "Использовать подготовленные караваны и секретные операции UR", "en": "Use saved UR caravans and covert operations"},
+      "sourceIds": ["S1"],
+      "confidence": "high"
+    },
+    {
+      "id": "ad-d3-use-research",
+      "eventId": "alliance-duel",
+      "phaseId": "AD-D3-TECH",
+      "label": {"ru": "Завершить исследования и открыть сундуки Ворона", "en": "Finish research and open Raven Gear Chests"},
+      "overlapGroups": ["research-speedup", "tech-might"],
+      "sourceIds": ["S1"],
+      "confidence": "high"
+    },
+    {
+      "id": "ad-d4-develop-heroes",
+      "eventId": "alliance-duel",
+      "phaseId": "AD-D4-HERO",
+      "label": {"ru": "Нанять героев и потратить подготовленные материалы", "en": "Recruit heroes and spend saved materials"},
+      "overlapGroups": ["hero-recruit", "antitoxin"],
+      "sourceIds": ["S1"],
+      "confidence": "high"
+    },
+    {
+      "id": "ad-d5-prepare",
+      "eventId": "alliance-duel",
+      "phaseId": "AD-D5-PREPARATION",
+      "label": {"ru": "Распределить строительство, исследования и тренировку по подходящим окнам", "en": "Split construction, research, and training across matching windows"},
+      "overlapGroups": ["construction-speedup", "building-might", "research-speedup", "tech-might", "training-speedup", "soldier-training"],
+      "sourceIds": ["S1", "S2", "S4"],
+      "confidence": "medium",
+      "verificationIds": ["VB-SB-003"]
+    },
+    {
+      "id": "ad-d6-shield-check",
+      "eventId": "alliance-duel",
+      "phaseId": "AD-D6-RAID",
+      "label": {"ru": "Проверить щит и согласованный план Рейда", "en": "Check shield status and the coordinated Raid plan"},
+      "sourceIds": ["S1"],
+      "confidence": "high"
+    },
+    {
+      "id": "sb-daily-confirm-cycle",
+      "eventId": "survival-battle",
+      "schedule": "daily-reset",
+      "label": {"ru": "Сверить Day 1–7 по экрану события", "en": "Confirm Day 1–7 from the event screen"},
+      "sourceIds": ["S2"],
+      "confidence": "low",
+      "verificationIds": ["VB-SB-002"]
+    },
+    {
+      "id": "sb-round-check-theme",
+      "eventId": "survival-battle",
+      "schedule": "each-round",
+      "label": {"ru": "Проверить тему и остаток четырёхчасового окна", "en": "Check the theme and remaining four-hour window"},
+      "sourceIds": ["S2", "S4"],
+      "confidence": "high"
+    },
+    {
+      "id": "sb-round-claim-stage-rewards",
+      "eventId": "survival-battle",
+      "schedule": "each-round",
+      "label": {"ru": "Забрать доступные награды стадии", "en": "Claim available Stage Rewards"},
+      "sourceIds": ["S2"],
+      "confidence": "medium",
+      "verificationIds": ["VB-SB-004"]
+    },
+    {
+      "id": "sb-daily-claim-medal-chests",
+      "eventId": "survival-battle",
+      "schedule": "before-daily-reset",
+      "label": {"ru": "Забрать сундуки за 2, 8 и 18 медалей", "en": "Claim chests at 2, 8, and 18 medals"},
+      "sourceIds": ["S2", "S4"],
+      "confidence": "medium",
+      "verificationIds": ["VB-SB-004"]
+    }
+  ]
+}
