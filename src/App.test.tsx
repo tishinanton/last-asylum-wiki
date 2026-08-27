@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { App } from './App'
 import { AppProvider } from './state/AppContext'
+import { ChecklistDataProvider } from './state/ChecklistDataContext'
 
 function renderApp(route = '/') {
   return render(
@@ -11,9 +12,11 @@ function renderApp(route = '/') {
       initialEntries={[route]}
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
-      <AppProvider>
-        <App />
-      </AppProvider>
+      <ChecklistDataProvider>
+        <AppProvider>
+          <App />
+        </AppProvider>
+      </ChecklistDataProvider>
     </MemoryRouter>,
   )
 }

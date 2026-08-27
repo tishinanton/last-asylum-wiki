@@ -9,31 +9,42 @@
 
 ### Запуск
 
-Требуется актуальная LTS-версия Node.js.
+Требуются .NET 10 SDK и актуальная LTS-версия Node.js. Пароль администратора
+не хранится в репозитории. Перед первым локальным запуском задайте его через
+.NET user secrets:
 
 ```powershell
 npm install
+dotnet user-secrets set "Admin:Password" "<временный-пароль>" --project LastAsylumWiki.csproj
+npm run build
 npm run dev
 ```
 
-Проверки и production-сборка:
+Приложение будет доступно по `http://127.0.0.1:5095`. ASP.NET Core собирает и
+раздаёт React-приложение из `wwwroot/`; отдельный Vite-сервер для обычного
+запуска не нужен.
+
+Проверки:
 
 ```powershell
 npm test
+npm run test:server
 npm run lint
 npm run typecheck
 npm run build
 ```
 
-Готовые статические файлы появляются в `dist/`. Приложение использует
-hash-маршруты (`#/today`, `#/alliance-duel` и другие), поэтому прямые переходы
-работают на статическом хостинге и под путём репозитория без серверного
-SPA-fallback.
+Операционные данные загружаются при старте из `App_Data/checklist.json` в
+память. Административная страница `#/admin` позволяет менять двуязычный текст,
+добавлять и удалять записи, а также менять порядок действий и запасов. Каждое
+принятое изменение атомарно записывается обратно в JSON-файл; устаревшая
+редакторская сессия не может затереть более новую ревизию.
 
 ### Возможности
 
 - текущая фаза Дуэли и шесть стадий Битвы с обратными отсчётами;
-- автоматически обновляемый чек-лист со стабильными ID и локальным хранением;
+- автоматически обновляемый чек-лист со стабильными ID и серверным JSON;
+- защищённый редактор действий, запасов и их порядка;
 - отдельные настройки неподтверждённых часов и точки отсчёта Битвы;
 - полные таблицы очков, недельный план пересечений, источники и очередь
   проверок;
@@ -60,32 +71,45 @@ separate from conflicting, version-dependent, and in-game verification items.
 
 ### Setup
 
-Use a current Node.js LTS release.
+Use the .NET 10 SDK and a current Node.js LTS release. The administrator
+password is not stored in the repository. Configure it through .NET user
+secrets before the first local run:
 
 ```powershell
 npm install
+dotnet user-secrets set "Admin:Password" "<temporary-password>" --project LastAsylumWiki.csproj
+npm run build
 npm run dev
 ```
 
-Validation and production build:
+The application is served at `http://127.0.0.1:5095`. ASP.NET Core builds and
+serves the React application from `wwwroot/`; a separate Vite server is not
+needed for normal use.
+
+Validation:
 
 ```powershell
 npm test
+npm run test:server
 npm run lint
 npm run typecheck
 npm run build
 ```
 
-Static output is written to `dist/`. Hash routes (`#/today`,
-`#/alliance-duel`, and others) support direct navigation on static hosts and
-repository base paths without a server-side SPA fallback.
+Operational data is loaded from `App_Data/checklist.json` into memory at
+startup. The `#/admin` route edits bilingual labels, adds and removes entries,
+and changes action/reserve ordering. Every accepted update is written back to
+the JSON file atomically; a stale editor cannot overwrite a newer revision.
 
-### GitHub Pages
+For deployment, publish the ASP.NET Core application to a writable host:
 
-The Vite build uses a relative base path, so `dist/` is ready for a future
-GitHub Pages workflow. This repository does not enable Pages or modify
-repository settings automatically. A maintainer can later publish `dist/`
-through an approved Actions workflow or another static host.
+```powershell
+dotnet publish LastAsylumWiki.csproj -c Release
+```
+
+Set `Admin__Password` in the deployment environment and persist the
+`App_Data/` directory on writable storage. Static-only hosts such as GitHub
+Pages cannot support the admin API or JSON writes.
 
 ### Documentation
 

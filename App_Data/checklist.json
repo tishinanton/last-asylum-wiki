@@ -1,0 +1,135 @@
+{
+  "revision": 1,
+  "schemaVersion": 1,
+  "dataAsOf": "2026-08-27",
+  "actions": [
+    {"id": "ad-sun-stage-falcon", "eventId": "alliance-duel", "phaseId": "AD-PREP-SUNDAY", "label": {"ru": "Выполнить задания «Сокол», но не забирать награды", "en": "Complete Falcon Tasks, but do not claim the rewards"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]},
+    {"id": "ad-sun-dispatch-grain", "eventId": "alliance-duel", "phaseId": "AD-PREP-SUNDAY", "label": {"ru": "Отправить отряд собирать зерно с возвратом после сброса", "en": "Send a march to gather Grain and return after reset"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]},
+    {"id": "ad-sun-dispatch-timber", "eventId": "alliance-duel", "phaseId": "AD-PREP-SUNDAY", "label": {"ru": "Отправить отряд собирать древесину с возвратом после сброса", "en": "Send a march to gather Timber and return after reset"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]},
+    {"id": "ad-sun-dispatch-herbs", "eventId": "alliance-duel", "phaseId": "AD-PREP-SUNDAY", "label": {"ru": "Отправить отряд собирать травы с возвратом после сброса", "en": "Send a march to gather Herbs and return after reset"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]},
+
+    {"id": "ad-d1-claim-falcon", "eventId": "alliance-duel", "phaseId": "AD-D1-RAVEN", "label": {"ru": "Забрать подготовленные награды заданий «Сокол»", "en": "Claim the prepared Falcon Task rewards"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]},
+    {"id": "ad-d1-collect-grain", "eventId": "alliance-duel", "phaseId": "AD-D1-RAVEN", "label": {"ru": "Завершить сбор зерна", "en": "Complete Grain gathering"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d1-collect-timber", "eventId": "alliance-duel", "phaseId": "AD-D1-RAVEN", "label": {"ru": "Завершить сбор древесины", "en": "Complete Timber gathering"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d1-collect-herbs", "eventId": "alliance-duel", "phaseId": "AD-D1-RAVEN", "label": {"ru": "Завершить сбор трав", "en": "Complete Herbs gathering"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d1-spend-stamina", "eventId": "alliance-duel", "phaseId": "AD-D1-RAVEN", "label": {"ru": "Потратить запланированный запас энергии", "en": "Spend the planned Stamina reserve"}, "overlapGroups": ["stamina"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d1-spend-raven-fruit", "eventId": "alliance-duel", "phaseId": "AD-D1-RAVEN", "label": {"ru": "Использовать плоды Ворона", "en": "Use Raven Fruit"}, "overlapGroups": ["raven-fruit"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d1-spend-raven-essence", "eventId": "alliance-duel", "phaseId": "AD-D1-RAVEN", "label": {"ru": "Использовать эссенцию Ворона", "en": "Use Raven Essence"}, "sourceIds": ["S1"], "confidence": "high"},
+
+    {"id": "ad-d2-hold-falcon", "eventId": "alliance-duel", "phaseId": "AD-D2-CONSTRUCTION", "label": {"ru": "Выполнить задания «Сокол», но оставить награды до среды", "en": "Complete Falcon Tasks, but leave the rewards for Wednesday"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]},
+    {"id": "ad-d2-send-ur-caravan", "eventId": "alliance-duel", "phaseId": "AD-D2-CONSTRUCTION", "label": {"ru": "Отправить караван качества UR", "en": "Dispatch a UR caravan"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d2-run-ur-operation", "eventId": "alliance-duel", "phaseId": "AD-D2-CONSTRUCTION", "label": {"ru": "Выполнить секретную операцию качества UR", "en": "Complete a UR covert operation"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d2-complete-buildings", "eventId": "alliance-duel", "phaseId": "AD-D2-CONSTRUCTION", "label": {"ru": "Завершить подготовленные улучшения зданий", "en": "Finish the prepared building upgrades"}, "overlapGroups": ["building-might"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d2-use-construction-speedups", "eventId": "alliance-duel", "phaseId": "AD-D2-CONSTRUCTION", "label": {"ru": "Использовать строительные ускорения", "en": "Use construction speedups"}, "overlapGroups": ["construction-speedup"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d2-recruit-survivors", "eventId": "alliance-duel", "phaseId": "AD-D2-CONSTRUCTION", "label": {"ru": "Потратить подготовленные билеты найма выживших", "en": "Spend the saved Survivor Recruitment tickets"}, "sourceIds": ["S1"], "confidence": "high"},
+
+    {"id": "ad-d3-claim-falcon", "eventId": "alliance-duel", "phaseId": "AD-D3-TECH", "label": {"ru": "Забрать подготовленные награды заданий «Сокол»", "en": "Claim the prepared Falcon Task rewards"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]},
+    {"id": "ad-d3-complete-research", "eventId": "alliance-duel", "phaseId": "AD-D3-TECH", "label": {"ru": "Завершить подготовленные исследования", "en": "Finish the prepared research"}, "overlapGroups": ["tech-might"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d3-use-research-speedups", "eventId": "alliance-duel", "phaseId": "AD-D3-TECH", "label": {"ru": "Использовать ускорения исследования", "en": "Use research speedups"}, "overlapGroups": ["research-speedup"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d3-use-study-scrolls", "eventId": "alliance-duel", "phaseId": "AD-D3-TECH", "label": {"ru": "Использовать свитки обучения", "en": "Use Study Scrolls"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d3-open-raven-chests", "eventId": "alliance-duel", "phaseId": "AD-D3-TECH", "label": {"ru": "Открыть подготовленные сундуки снаряжения Ворона", "en": "Open the saved Raven Gear Chests"}, "sourceIds": ["S1"], "confidence": "high"},
+
+    {"id": "ad-d4-hold-falcon", "eventId": "alliance-duel", "phaseId": "AD-D4-HERO", "label": {"ru": "Выполнить задания «Сокол», но оставить награды до пятницы", "en": "Complete Falcon Tasks, but leave the rewards for Friday"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]},
+    {"id": "ad-d4-recruit-heroes", "eventId": "alliance-duel", "phaseId": "AD-D4-HERO", "label": {"ru": "Потратить подготовленные билеты найма героев", "en": "Spend the saved Hero Recruitment tickets"}, "overlapGroups": ["hero-recruit"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d4-spend-antitoxin", "eventId": "alliance-duel", "phaseId": "AD-D4-HERO", "label": {"ru": "Потратить подготовленный антитоксин", "en": "Spend the saved Antitoxin"}, "overlapGroups": ["antitoxin"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d4-use-hero-fragments", "eventId": "alliance-duel", "phaseId": "AD-D4-HERO", "label": {"ru": "Использовать универсальные фрагменты героев", "en": "Use universal Hero Fragments"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d4-use-skill-badges", "eventId": "alliance-duel", "phaseId": "AD-D4-HERO", "label": {"ru": "Использовать значки навыков героев", "en": "Use Hero Skill Badges"}, "sourceIds": ["S1"], "confidence": "high"},
+
+    {"id": "ad-d5-claim-falcon", "eventId": "alliance-duel", "phaseId": "AD-D5-PREPARATION", "label": {"ru": "Забрать подготовленные награды заданий «Сокол»", "en": "Claim the prepared Falcon Task rewards"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]},
+    {"id": "ad-d5-complete-building", "eventId": "alliance-duel", "phaseId": "AD-D5-PREPARATION", "label": {"ru": "Завершить улучшение здания", "en": "Finish a building upgrade"}, "overlapGroups": ["building-might"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d5-use-construction-speedups", "eventId": "alliance-duel", "phaseId": "AD-D5-PREPARATION", "label": {"ru": "Использовать строительные ускорения", "en": "Use construction speedups"}, "overlapGroups": ["construction-speedup"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d5-complete-research", "eventId": "alliance-duel", "phaseId": "AD-D5-PREPARATION", "label": {"ru": "Завершить исследование", "en": "Finish research"}, "overlapGroups": ["tech-might"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d5-use-research-speedups", "eventId": "alliance-duel", "phaseId": "AD-D5-PREPARATION", "label": {"ru": "Использовать ускорения исследования", "en": "Use research speedups"}, "overlapGroups": ["research-speedup"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d5-train-promote-soldiers", "eventId": "alliance-duel", "phaseId": "AD-D5-PREPARATION", "label": {"ru": "Обучить или повысить солдат", "en": "Train or promote soldiers"}, "overlapGroups": ["soldier-training"], "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d5-use-training-speedups", "eventId": "alliance-duel", "phaseId": "AD-D5-PREPARATION", "label": {"ru": "Использовать ускорения обучения", "en": "Use training speedups"}, "overlapGroups": ["training-speedup"], "sourceIds": ["S1"], "confidence": "high"},
+
+    {"id": "ad-d6-send-ur-caravan", "eventId": "alliance-duel", "phaseId": "AD-D6-RAID", "label": {"ru": "Отправить караван качества UR", "en": "Dispatch a UR caravan"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d6-run-ur-operation", "eventId": "alliance-duel", "phaseId": "AD-D6-RAID", "label": {"ru": "Выполнить секретную операцию качества UR", "en": "Complete a UR covert operation"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d6-use-construction-speedups", "eventId": "alliance-duel", "phaseId": "AD-D6-RAID", "label": {"ru": "Использовать строительные ускорения", "en": "Use construction speedups"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d6-use-research-speedups", "eventId": "alliance-duel", "phaseId": "AD-D6-RAID", "label": {"ru": "Использовать ускорения исследования", "en": "Use research speedups"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d6-use-healing-speedups", "eventId": "alliance-duel", "phaseId": "AD-D6-RAID", "label": {"ru": "Использовать ускорения лечения", "en": "Use healing speedups"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d6-check-shield", "eventId": "alliance-duel", "phaseId": "AD-D6-RAID", "label": {"ru": "Проверить щит до выхода из игры", "en": "Check the shield before going offline"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-d6-follow-raid-plan", "eventId": "alliance-duel", "phaseId": "AD-D6-RAID", "label": {"ru": "Следовать согласованному плану Рейда альянса", "en": "Follow the alliance's coordinated Raid plan"}, "sourceIds": ["S1"], "confidence": "high"},
+    {"id": "ad-claim-daily-milestones", "eventId": "alliance-duel", "schedule": "active-day", "label": {"ru": "Забрать доступные ежедневные награды Дуэли до сброса", "en": "Claim available Duel Daily Milestone Rewards before reset"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-004"]},
+
+    {"id": "sb-confirm-cycle-day", "eventId": "survival-battle", "label": {"ru": "Сверить день цикла 1–7 с экраном события", "en": "Confirm cycle Day 1–7 against the event screen"}, "sourceIds": ["S2"], "confidence": "low", "verificationIds": ["VB-SB-002"]},
+    {"id": "sb-confirm-current-theme", "eventId": "survival-battle", "label": {"ru": "Сверить текущую тему с экраном события", "en": "Confirm the current theme against the event screen"}, "sourceIds": ["S2", "S4"], "confidence": "high"},
+    {"id": "sb-claim-round-rewards", "eventId": "survival-battle", "label": {"ru": "Забрать доступные награды текущей стадии", "en": "Claim the available current Stage Rewards"}, "sourceIds": ["S2"], "confidence": "medium", "verificationIds": ["VB-SB-004"]},
+    {"id": "sb-claim-medal-chests", "eventId": "survival-battle", "label": {"ru": "Забрать доступные сундуки за 2, 8 и 18 медалей до сброса", "en": "Claim available chests at 2, 8, and 18 medals before reset"}, "sourceIds": ["S2", "S4"], "confidence": "medium", "verificationIds": ["VB-SB-004"]},
+    {"id": "sb-build-finish-upgrade", "eventId": "survival-battle", "themeId": "SB-BUILD", "label": {"ru": "Завершить улучшение здания", "en": "Finish a building upgrade"}, "overlapGroups": ["building-might"], "sourceIds": ["S2", "S4"], "confidence": "high"},
+    {"id": "sb-build-use-speedups", "eventId": "survival-battle", "themeId": "SB-BUILD", "label": {"ru": "Использовать строительные ускорения", "en": "Use construction speedups"}, "overlapGroups": ["construction-speedup"], "sourceIds": ["S2", "S4"], "confidence": "high"},
+    {"id": "sb-train-soldiers", "eventId": "survival-battle", "themeId": "SB-TRAIN", "label": {"ru": "Обучить или повысить солдат; значение очков спорное", "en": "Train or promote soldiers; the point value is disputed"}, "overlapGroups": ["soldier-training"], "sourceIds": ["S2", "S4"], "confidence": "low", "verificationIds": ["VB-SB-003"]},
+    {"id": "sb-train-use-speedups", "eventId": "survival-battle", "themeId": "SB-TRAIN", "label": {"ru": "Использовать ускорения обучения", "en": "Use training speedups"}, "overlapGroups": ["training-speedup"], "sourceIds": ["S2", "S4"], "confidence": "high"},
+    {"id": "sb-research-finish", "eventId": "survival-battle", "themeId": "SB-RESEARCH", "label": {"ru": "Завершить исследование", "en": "Finish research"}, "overlapGroups": ["tech-might"], "sourceIds": ["S2", "S4"], "confidence": "high"},
+    {"id": "sb-research-use-speedups", "eventId": "survival-battle", "themeId": "SB-RESEARCH", "label": {"ru": "Использовать ускорения исследования", "en": "Use research speedups"}, "overlapGroups": ["research-speedup"], "sourceIds": ["S2", "S4"], "confidence": "high"},
+    {"id": "sb-raven-spend-stamina", "eventId": "survival-battle", "themeId": "SB-RAVEN", "label": {"ru": "Потратить энергию", "en": "Spend Stamina"}, "overlapGroups": ["stamina"], "sourceIds": ["S2", "S4"], "confidence": "high"},
+    {"id": "sb-raven-use-fruit", "eventId": "survival-battle", "themeId": "SB-RAVEN", "label": {"ru": "Использовать плоды Ворона пачками по 10", "en": "Use Raven Fruit in batches of 10"}, "overlapGroups": ["raven-fruit"], "sourceIds": ["S2", "S4"], "confidence": "high"},
+    {"id": "sb-heroes-recruit", "eventId": "survival-battle", "themeId": "SB-HEROES", "label": {"ru": "Нанять героев", "en": "Recruit Heroes"}, "overlapGroups": ["hero-recruit"], "sourceIds": ["S2", "S4"], "confidence": "high"},
+    {"id": "sb-heroes-spend-antitoxin", "eventId": "survival-battle", "themeId": "SB-HEROES", "label": {"ru": "Потратить антитоксин пачками по 1 950", "en": "Spend Antitoxin in batches of 1,950"}, "overlapGroups": ["antitoxin"], "sourceIds": ["S2", "S4"], "confidence": "high"}
+  ],
+  "stockpiles": [
+    {
+      "id": "stockpile-ad-d1",
+      "targetPhaseId": "AD-D1-RAVEN",
+      "items": [
+        {"id": "save-d1-stamina", "label": {"ru": "Энергия", "en": "Stamina"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d1-raven-fruit", "label": {"ru": "Плоды Ворона", "en": "Raven Fruit"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d1-raven-essence", "label": {"ru": "Эссенция Ворона", "en": "Raven Essence"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d1-gathering", "label": {"ru": "Отряды на сборе зерна, древесины и трав к понедельнику", "en": "Marches gathering Grain, Timber, and Herbs for Monday"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]},
+        {"id": "save-d1-falcon", "label": {"ru": "Выполненные, но не полученные задания «Сокол»", "en": "Completed but unclaimed Falcon Tasks"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]}
+      ]
+    },
+    {
+      "id": "stockpile-ad-d2",
+      "targetPhaseId": "AD-D2-CONSTRUCTION",
+      "items": [
+        {"id": "save-d2-buildings", "label": {"ru": "Готовые к завершению улучшения зданий", "en": "Building upgrades ready to finish"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d2-construction-speedups", "label": {"ru": "Строительные ускорения", "en": "Construction speedups"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d2-ur-caravans", "label": {"ru": "Попытки караванов UR", "en": "UR caravan attempts"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d2-ur-operations", "label": {"ru": "Попытки секретных операций UR", "en": "UR covert operation attempts"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d2-survivor-tickets", "label": {"ru": "Билеты найма выживших", "en": "Survivor Recruitment tickets"}, "sourceIds": ["S1"], "confidence": "high"}
+      ]
+    },
+    {
+      "id": "stockpile-ad-d3",
+      "targetPhaseId": "AD-D3-TECH",
+      "items": [
+        {"id": "save-d3-research", "label": {"ru": "Готовые к завершению исследования", "en": "Research ready to finish"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d3-research-speedups", "label": {"ru": "Ускорения исследования", "en": "Research speedups"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d3-study-scrolls", "label": {"ru": "Свитки обучения", "en": "Study Scrolls"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d3-raven-chests", "label": {"ru": "Сундуки снаряжения Ворона", "en": "Raven Gear Chests"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d3-falcon", "label": {"ru": "Выполненные во вторник задания «Сокол» без получения наград", "en": "Tuesday Falcon Tasks completed without claiming rewards"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]}
+      ]
+    },
+    {
+      "id": "stockpile-ad-d4",
+      "targetPhaseId": "AD-D4-HERO",
+      "items": [
+        {"id": "save-d4-hero-tickets", "label": {"ru": "Билеты найма героев", "en": "Hero Recruitment tickets"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d4-antitoxin", "label": {"ru": "Антитоксин", "en": "Antitoxin"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d4-fragments", "label": {"ru": "Универсальные фрагменты героев", "en": "Universal Hero Fragments"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d4-skill-badges", "label": {"ru": "Значки навыков героев", "en": "Hero Skill Badges"}, "sourceIds": ["S1"], "confidence": "high"}
+      ]
+    },
+    {
+      "id": "stockpile-ad-d5",
+      "targetPhaseId": "AD-D5-PREPARATION",
+      "items": [
+        {"id": "save-d5-falcon", "label": {"ru": "Выполненные в четверг задания «Сокол» без получения наград", "en": "Thursday Falcon Tasks completed without claiming rewards"}, "sourceIds": ["S1"], "confidence": "medium", "verificationIds": ["VB-AD-006"]},
+        {"id": "save-d5-queues", "label": {"ru": "Строительство, исследование и обучение к завершению", "en": "Construction, research, and training ready to finish"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d5-speedups", "label": {"ru": "Строительные, исследовательские и тренировочные ускорения", "en": "Construction, research, and training speedups"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d5-soldiers", "label": {"ru": "Солдаты низшего уровня для повышения", "en": "Lower-tier soldiers ready for promotion"}, "sourceIds": ["S1"], "confidence": "high"}
+      ]
+    },
+    {
+      "id": "stockpile-ad-d6",
+      "targetPhaseId": "AD-D6-RAID",
+      "items": [
+        {"id": "save-d6-ur-caravans", "label": {"ru": "Попытки караванов UR", "en": "UR caravan attempts"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d6-ur-operations", "label": {"ru": "Попытки секретных операций UR", "en": "UR covert operation attempts"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d6-healing-speedups", "label": {"ru": "Ускорения лечения", "en": "Healing speedups"}, "sourceIds": ["S1"], "confidence": "high"},
+        {"id": "save-d6-shield", "label": {"ru": "Щит и согласованный с альянсом план Рейда", "en": "Shield and the alliance's coordinated Raid plan"}, "sourceIds": ["S1"], "confidence": "high"}
+      ]
+    }
+  ]
+}

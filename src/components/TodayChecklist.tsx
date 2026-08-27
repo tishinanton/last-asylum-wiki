@@ -10,10 +10,10 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { phaseNames, themeNames } from '../data/checklist'
-import { dailyPlaybook } from '../data/daily-playbook'
 import { localize, translate } from '../i18n'
 import { useEventStatus } from '../hooks/useEventStatus'
 import { useApp } from '../state/app-context'
+import { useChecklistData } from '../state/checklist-data-context'
 import type { ChecklistTask, EventId } from '../types'
 
 interface TodayChecklistProps {
@@ -45,6 +45,7 @@ export function TodayChecklist({ compact = false }: TodayChecklistProps) {
     clearCycle,
     clearAll,
   } = useApp()
+  const { data: dailyPlaybook, error: checklistError } = useChecklistData()
   const status = useEventStatus()
   const [confirmMode, setConfirmMode] = useState<'today' | 'all' | null>(null)
   const locale = state.preferences.locale
@@ -142,6 +143,13 @@ export function TodayChecklist({ compact = false }: TodayChecklistProps) {
         <div className="warning-strip compact" role="status">
           <AlertTriangle aria-hidden="true" size={18} />
           <span><strong>{t('storageProblem')}.</strong> {t('storageRecovery')}</span>
+        </div>
+      )}
+
+      {checklistError && (
+        <div className="warning-strip compact" role="status">
+          <AlertTriangle aria-hidden="true" size={18} />
+          <span>{t('checklistLoadError')}</span>
         </div>
       )}
 

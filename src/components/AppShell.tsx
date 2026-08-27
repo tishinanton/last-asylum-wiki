@@ -8,6 +8,7 @@ import {
   RadioTower,
   Settings2,
   Shield,
+  ShieldCheck,
   X,
 } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
@@ -23,6 +24,7 @@ const navItems = [
   { to: '/survival-battle', key: 'navSurvival', icon: BookOpenText },
   { to: '/weekly-plan', key: 'navWeekly', icon: CalendarRange },
   { to: '/sources', key: 'navSources', icon: Database },
+  { to: '/admin', key: 'navAdmin', icon: ShieldCheck },
 ] as const
 
 export function AppShell({ children }: { children: ReactNode }) {

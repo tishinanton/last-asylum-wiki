@@ -67,6 +67,7 @@ function isStockpilePlan(value: unknown): value is StockpilePlan {
 function isDailyPlaybookData(value: unknown): value is DailyPlaybookData {
   if (!isRecord(value)) return false
   return (
+    (value.revision === undefined || typeof value.revision === 'number') &&
     typeof value.schemaVersion === 'number' &&
     typeof value.dataAsOf === 'string' &&
     Array.isArray(value.actions) &&
@@ -76,11 +77,11 @@ function isDailyPlaybookData(value: unknown): value is DailyPlaybookData {
   )
 }
 
-function parsePlaybook(value: unknown): DailyPlaybookData {
+export function parseDailyPlaybook(value: unknown): DailyPlaybookData {
   if (!isDailyPlaybookData(value)) {
     throw new Error('Daily playbook data does not match the expected schema.')
   }
   return value
 }
 
-export const dailyPlaybook = parsePlaybook(playbookJson)
+export const dailyPlaybook = parseDailyPlaybook(playbookJson)

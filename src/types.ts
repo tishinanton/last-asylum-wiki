@@ -35,6 +35,7 @@ export interface StockpilePlan {
 }
 
 export interface DailyPlaybookData {
+  revision?: number
   schemaVersion: number
   dataAsOf: string
   actions: ChecklistTask[]

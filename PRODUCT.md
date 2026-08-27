@@ -60,6 +60,10 @@ high contrast, without generic neon cyberpunk or excessive glow.
 - Comprehensive RU/EN event guides in `docs/ru/` and `docs/en/`.
 - Stable checklist seed data in `docs/research/checklist-data.json` and granular
   action/stockpile data in `docs/research/daily-playbook.json`.
+- ASP.NET Core serves the React bundle, loads the operational checklist from
+  `App_Data/checklist.json`, and persists approved admin edits atomically.
+- The bilingual admin route edits checklist entries and ordering after a
+  password-backed, server-issued session. Credentials stay outside Git.
 - A bilingual glossary, source ledger, event-overlap plan, checklist
   specification, and verification backlog in `docs/research/`.
 - No licensed game art, logo, official API, official publisher rules, user

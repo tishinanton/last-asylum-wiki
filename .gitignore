@@ -9,12 +9,16 @@ Desktop.ini
 *.swp
 *~
 
-# Future generated site output
+# Generated application output
 node_modules/
 dist/
+wwwroot/
+bin/
+obj/
 build/
 .cache/
 coverage/
+.publish-check/
 .playwright-mcp/
 /last-asylum-*.png
 /last-asylum-*.snapshot.md
@@ -25,3 +29,4 @@ coverage/
 .env.*
 !.env.example
 *.log
+App_Data/*.tmp
