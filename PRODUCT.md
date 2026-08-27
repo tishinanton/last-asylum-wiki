@@ -58,7 +58,8 @@ high contrast, without generic neon cyberpunk or excessive glow.
 ## Evidence on Hand
 
 - Comprehensive RU/EN event guides in `docs/ru/` and `docs/en/`.
-- Stable checklist seed data in `docs/research/checklist-data.json`.
+- Stable checklist seed data in `docs/research/checklist-data.json` and granular
+  action/stockpile data in `docs/research/daily-playbook.json`.
 - A bilingual glossary, source ledger, event-overlap plan, checklist
   specification, and verification backlog in `docs/research/`.
 - No licensed game art, logo, official API, official publisher rules, user

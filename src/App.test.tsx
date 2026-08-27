@@ -26,6 +26,7 @@ describe('core application behavior', () => {
 
   afterEach(() => {
     cleanup()
+    vi.useRealTimers()
     vi.unstubAllGlobals()
   })
 
@@ -70,6 +71,24 @@ describe('core application behavior', () => {
       vi.advanceTimersByTime(2_000)
     })
     expect(screen.getAllByRole('checkbox')[0]).not.toBeChecked()
-    vi.useRealTimers()
+  })
+
+  it('shows granular current actions and a separate upcoming stockpile plan', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-08-24T01:00:00Z'))
+    renderApp('/today')
+
+    expect(screen.getByRole('heading', { name: 'Сделать сейчас' })).toBeInTheDocument()
+    expect(screen.getByText('Потратить запланированный запас энергии')).toBeInTheDocument()
+    expect(screen.getByText('Завершить улучшение здания')).toBeInTheDocument()
+    expect(
+      screen.queryByText('Обучить или повысить солдат; значение очков спорное'),
+    ).not.toBeInTheDocument()
+
+    expect(
+      screen.getByRole('heading', { name: 'Сохранить на следующие дни' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Билеты найма выживших')).toBeInTheDocument()
+    expect(screen.getByText('Сундуки снаряжения Ворона')).toBeInTheDocument()
   })
 })

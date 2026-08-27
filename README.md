@@ -47,6 +47,7 @@ SPA-fallback.
 - [Совмещение событий и недельный план](docs/research/synergy-weekly-plan.md)
 - [Спецификация ежедневного чек-листа](docs/research/checklist-spec.md)
 - [Данные чек-листа](docs/research/checklist-data.json)
+- [Детальный ежедневный план](docs/research/daily-playbook.json)
 - [Реестр источников](docs/research/sources.md)
 - [Очередь проверок](docs/research/verification-backlog.md)
 
@@ -94,6 +95,7 @@ through an approved Actions workflow or another static host.
 - [Event overlap and weekly plan](docs/research/synergy-weekly-plan.md)
 - [Daily checklist specification](docs/research/checklist-spec.md)
 - [Checklist data](docs/research/checklist-data.json)
+- [Granular daily playbook](docs/research/daily-playbook.json)
 - [Source ledger](docs/research/sources.md)
 - [Verification backlog](docs/research/verification-backlog.md)
 

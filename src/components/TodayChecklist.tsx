@@ -1,13 +1,16 @@
 import {
+  Archive,
   AlertTriangle,
   Check,
   CheckCircle2,
   Eraser,
   Link2,
+  ListChecks,
   RotateCcw,
 } from 'lucide-react'
 import { useState } from 'react'
-import { checklistSeed, phaseNames, themeNames } from '../data/checklist'
+import { phaseNames, themeNames } from '../data/checklist'
+import { dailyPlaybook } from '../data/daily-playbook'
 import { localize, translate } from '../i18n'
 import { useEventStatus } from '../hooks/useEventStatus'
 import { useApp } from '../state/app-context'
@@ -16,6 +19,21 @@ import type { ChecklistTask, EventId } from '../types'
 interface TodayChecklistProps {
   compact?: boolean
 }
+
+const alliancePhaseOrder = [
+  'AD-D1-RAVEN',
+  'AD-D2-CONSTRUCTION',
+  'AD-D3-TECH',
+  'AD-D4-HERO',
+  'AD-D5-PREPARATION',
+  'AD-D6-RAID',
+]
+
+const confidenceKeys = {
+  high: 'confidenceHigh',
+  medium: 'confidenceMedium',
+  low: 'confidenceLow',
+} as const
 
 function taskCycleKey(
   task: ChecklistTask,
@@ -38,24 +56,50 @@ export function TodayChecklist({ compact = false }: TodayChecklistProps) {
   const locale = state.preferences.locale
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key)
 
-  const allianceTasks = checklistSeed.tasks.filter((task) => {
-    if (task.eventId !== 'alliance-duel') return false
-    if (status.alliancePhaseId === 'AD-PREP-SUNDAY') {
-      return task.schedule === 'sunday-preparation'
-    }
-    return task.schedule === 'active-day' || task.phaseId === status.alliancePhaseId
-  })
-  const survivalTasks = checklistSeed.tasks.filter((task) => task.eventId === 'survival-battle')
+  const allianceTasks = dailyPlaybook.actions.filter(
+    (task) =>
+      task.eventId === 'alliance-duel' &&
+      (task.phaseId === status.alliancePhaseId ||
+        (task.schedule === 'active-day' && status.alliancePhaseId !== 'AD-PREP-SUNDAY')),
+  )
+  const survivalTasks = dailyPlaybook.actions.filter(
+    (task) =>
+      task.eventId === 'survival-battle' &&
+      (!task.themeId || task.themeId === status.currentRound.themeId),
+  )
   const allTasks = [...allianceTasks, ...survivalTasks]
-  const visibleTasks = compact ? allTasks.slice(0, 5) : allTasks
+  const visibleTasks = compact
+    ? [
+        ...allianceTasks.slice(0, 4),
+        ...survivalTasks.filter((task) => task.themeId).slice(0, 2),
+        ...survivalTasks.filter((task) => !task.themeId).slice(0, 2),
+      ]
+    : allTasks
+  const currentPhaseIndex = alliancePhaseOrder.indexOf(status.alliancePhaseId)
+  const upcomingStart = currentPhaseIndex < 0 ? 0 : currentPhaseIndex + 1
+  const stockpilePlans = Array.from(
+    { length: compact ? 2 : 3 },
+    (_, offset) => alliancePhaseOrder[(upcomingStart + offset) % alliancePhaseOrder.length],
+  )
+    .map((phaseId) =>
+      dailyPlaybook.stockpiles.find((plan) => plan.targetPhaseId === phaseId),
+    )
+    .filter((plan) => plan !== undefined)
+
+  const completionTaskId = (task: ChecklistTask) =>
+    task.eventId === 'survival-battle' && task.themeId
+      ? `${task.id}:round-${status.currentRound.index}`
+      : task.id
+
   const done = allTasks.filter((task) =>
-    isComplete(task.eventId, taskCycleKey(task, status), task.id),
+    isComplete(task.eventId, taskCycleKey(task, status), completionTaskId(task)),
   ).length
   const progress = allTasks.length === 0 ? 0 : Math.round((done / allTasks.length) * 100)
 
   const renderTask = (task: ChecklistTask) => {
     const cycleKey = taskCycleKey(task, status)
-    const checked = isComplete(task.eventId, cycleKey, task.id)
+    const storedTaskId = completionTaskId(task)
+    const checked = isComplete(task.eventId, cycleKey, storedTaskId)
     const overlaps =
       task.eventId === 'alliance-duel' &&
       task.overlapGroups?.some((group) => status.activeOverlapGroups.includes(group))
@@ -66,14 +110,14 @@ export function TodayChecklist({ compact = false }: TodayChecklistProps) {
           <input
             type="checkbox"
             checked={checked}
-            onChange={() => toggleComplete(task.eventId, cycleKey, task.id)}
+            onChange={() => toggleComplete(task.eventId, cycleKey, storedTaskId)}
           />
           <span className="custom-check" aria-hidden="true"><Check size={16} /></span>
           <span className="task-copy">
             <strong>{localize(locale, task.label)}</strong>
             <small>
               <span className={`confidence-dot confidence-${task.confidence}`} />
-              {task.sourceIds.join(' · ')}
+              {t(confidenceKeys[task.confidence])} · {task.sourceIds.join(' · ')}
               {task.verificationIds?.length ? ` · ${task.verificationIds.join(', ')}` : ''}
             </small>
           </span>
@@ -112,29 +156,69 @@ export function TodayChecklist({ compact = false }: TodayChecklistProps) {
         </div>
       )}
 
-      {visibleTasks.length ? (
-        <div className="checklist-groups">
-          {(['alliance-duel', 'survival-battle'] as EventId[]).map((eventId) => {
-            const tasks = visibleTasks.filter((task) => task.eventId === eventId)
-            if (!tasks.length) return null
-            return (
-              <section key={eventId} className="checklist-group">
-                <div className="group-label">
-                  <span>{eventId === 'alliance-duel' ? t('navAlliance') : t('navSurvival')}</span>
-                  <small>
-                    {eventId === 'alliance-duel'
-                      ? localize(locale, phaseNames[status.alliancePhaseId])
-                      : localize(locale, themeNames[status.currentRound.themeId])}
-                  </small>
-                </div>
-                <ul>{tasks.map(renderTask)}</ul>
-              </section>
-            )
-          })}
+      <div className="playbook-section">
+        <div className="playbook-section-heading">
+          <ListChecks aria-hidden="true" size={20} />
+          <div>
+            <h3>{t('actionsNow')}</h3>
+            <p>{t('actionsNowLead')}</p>
+          </div>
         </div>
-      ) : (
-        <p className="empty-state"><CheckCircle2 aria-hidden="true" /> {t('checklistEmpty')}</p>
-      )}
+        {visibleTasks.length ? (
+          <div className="checklist-groups">
+            {(['alliance-duel', 'survival-battle'] as EventId[]).map((eventId) => {
+              const tasks = visibleTasks.filter((task) => task.eventId === eventId)
+              if (!tasks.length) return null
+              return (
+                <section key={eventId} className="checklist-group">
+                  <div className="group-label">
+                    <span>{eventId === 'alliance-duel' ? t('navAlliance') : t('navSurvival')}</span>
+                    <small>
+                      {eventId === 'alliance-duel'
+                        ? localize(locale, phaseNames[status.alliancePhaseId])
+                        : localize(locale, themeNames[status.currentRound.themeId])}
+                    </small>
+                  </div>
+                  <ul>{tasks.map(renderTask)}</ul>
+                </section>
+              )
+            })}
+          </div>
+        ) : (
+          <p className="empty-state"><CheckCircle2 aria-hidden="true" /> {t('checklistEmpty')}</p>
+        )}
+      </div>
+
+      <section className="playbook-section stockpile-section">
+        <div className="playbook-section-heading">
+          <Archive aria-hidden="true" size={20} />
+          <div>
+            <h3>{t('saveForLater')}</h3>
+            <p>{t('saveForLaterLead')}</p>
+          </div>
+        </div>
+        <div className="stockpile-grid">
+          {stockpilePlans.map((plan) => (
+            <article className="stockpile-manifest" key={plan.id}>
+              <h4>{localize(locale, phaseNames[plan.targetPhaseId])}</h4>
+              <ul>
+                {plan.items.map((item) => (
+                  <li key={item.id}>
+                    <span>{localize(locale, item.label)}</span>
+                    <small>
+                      <span className={`confidence-dot confidence-${item.confidence}`} />
+                      {t(confidenceKeys[item.confidence])} · {item.sourceIds.join(' · ')}
+                      {item.verificationIds?.length
+                        ? ` · ${item.verificationIds.join(', ')}`
+                        : ''}
+                    </small>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
 
       {!compact && (
         <div className="checklist-actions">

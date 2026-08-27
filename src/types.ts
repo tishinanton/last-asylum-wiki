@@ -12,11 +12,33 @@ export interface ChecklistTask {
   eventId: EventId
   schedule?: string
   phaseId?: string
+  themeId?: string
   label: LocalizedText
   overlapGroups?: string[]
   sourceIds: string[]
   confidence: 'high' | 'medium' | 'low'
   verificationIds?: string[]
+}
+
+export interface StockpileItem {
+  id: string
+  label: LocalizedText
+  sourceIds: string[]
+  confidence: 'high' | 'medium' | 'low'
+  verificationIds?: string[]
+}
+
+export interface StockpilePlan {
+  id: string
+  targetPhaseId: string
+  items: StockpileItem[]
+}
+
+export interface DailyPlaybookData {
+  schemaVersion: number
+  dataAsOf: string
+  actions: ChecklistTask[]
+  stockpiles: StockpilePlan[]
 }
 
 export interface ChecklistSeed {
