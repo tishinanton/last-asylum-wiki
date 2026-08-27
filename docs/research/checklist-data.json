@@ -149,7 +149,7 @@
       "id": "sb-daily-confirm-cycle",
       "eventId": "survival-battle",
       "schedule": "daily-reset",
-      "label": {"ru": "Сверить Day 1–7 по экрану события", "en": "Confirm Day 1–7 from the event screen"},
+      "label": {"ru": "Сверить день цикла 1–7 по экрану события", "en": "Confirm Day 1–7 from the event screen"},
       "sourceIds": ["S2"],
       "confidence": "low",
       "verificationIds": ["VB-SB-002"]

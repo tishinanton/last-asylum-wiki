@@ -15,6 +15,10 @@ dist/
 build/
 .cache/
 coverage/
+.playwright-mcp/
+/last-asylum-*.png
+/last-asylum-*.snapshot.md
+.impeccable/hook.cache.json
 
 # Local environment and logs
 .env

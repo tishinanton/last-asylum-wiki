@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-27T16:22:42.785Z",
+  "title": "Design System: Last Asylum: Plague — Полевой узел",
+  "extensions": {
+    "colorMeta": {
+      "amber": { "role": "primary", "displayName": "Hazard Amber", "canonical": "#e2a14a", "tonalRamp": ["#422a0b", "#7b4f14", "#b0711c", "#dd912c", "#e6ad61", "#eec896", "#f5dfc1", "#fbf4e9"] },
+      "amber-pale": { "role": "primary", "displayName": "Pale Signal Amber", "canonical": "#f0c67d", "tonalRamp": ["#452e08", "#80570f", "#b77c15", "#e69f24", "#ecb75a", "#f2cf91", "#f8e3bf", "#fcf5e8"] },
+      "amber-dark": { "role": "primary", "displayName": "Scorched Amber", "canonical": "#6f4a21", "tonalRamp": ["#3b2712", "#6e4921", "#9d692f", "#c78842", "#d5a671", "#e3c4a1", "#efdcc8", "#f9f3eb"] },
+      "rust": { "role": "secondary", "displayName": "Oxidized Copper", "canonical": "#b96042", "tonalRamp": ["#381d14", "#693726", "#964e36", "#bf684b", "#cf8e78", "#dfb3a5", "#ecd3ca", "#f8efec"] },
+      "steel": { "role": "tertiary", "displayName": "Cold Steel", "canonical": "#8b9a99", "tonalRamp": ["#242929", "#424c4c", "#5f6d6c", "#7c8d8c", "#9daaa9", "#bec6c5", "#d9dedd", "#f1f3f3"] },
+      "ink": { "role": "neutral", "displayName": "Bone Paper", "canonical": "#e9e6dc", "tonalRamp": ["#2f2b1e", "#585037", "#7d734f", "#a19469", "#b8ae8e", "#d0c9b4", "#e3e0d3", "#f5f4ef"] },
+      "ink-strong": { "role": "neutral", "displayName": "Flare White", "canonical": "#fffdf4", "tonalRamp": ["#4d3f00", "#8f7500", "#cca700", "#ffd20a", "#ffde47", "#ffe985", "#fff2b8", "#fffae5"] },
+      "muted": { "role": "neutral", "displayName": "Ash Grey", "canonical": "#aaa99f", "tonalRamp": ["#292824", "#4c4b43", "#6c6b60", "#8c8b7d", "#a9a89e", "#c6c5be", "#ddddd9", "#f3f3f1"] },
+      "muted-warm": { "role": "neutral", "displayName": "Warm Ash", "canonical": "#c3b9a6", "tonalRamp": ["#2e291f", "#554c3a", "#7a6c52", "#9c8c6d", "#b5a991", "#cec5b6", "#e2ddd4", "#f5f3f0"] },
+      "void": { "role": "neutral", "displayName": "Blackout", "canonical": "#0b0d0c", "tonalRamp": ["#232926", "#414d47", "#5e6f66", "#7a8f85", "#9caba3", "#bdc7c2", "#d8dedb", "#f1f3f2"] },
+      "ground": { "role": "neutral", "displayName": "Charcoal Ground", "canonical": "#101210", "tonalRamp": ["#242924", "#434c43", "#606c60", "#7d8c7d", "#9ea99e", "#bec5be", "#d9ddd9", "#f2f3f2"] },
+      "surface": { "role": "neutral", "displayName": "Steel Plate", "canonical": "#171a17", "tonalRamp": ["#242924", "#434c43", "#606c60", "#7d8c7d", "#9ea99e", "#bec6be", "#d9ddd9", "#f1f3f1"] },
+      "surface-raised": { "role": "neutral", "displayName": "Raised Plate", "canonical": "#1d211d", "tonalRamp": ["#242924", "#434c43", "#5f6d5f", "#7d8c7d", "#9da99d", "#bec6be", "#d9ded9", "#f1f3f1"] },
+      "surface-worn": { "role": "neutral", "displayName": "Worn Plate", "canonical": "#252720", "tonalRamp": ["#282a22", "#4a4e40", "#6a705c", "#8a9179", "#a7ac9a", "#c4c8bc", "#dddfd8", "#f3f4f1"] },
+      "rule": { "role": "neutral", "displayName": "Structural Rule", "canonical": "#40443d", "tonalRamp": ["#262824", "#474b44", "#656c60", "#848b7e", "#a2a89e", "#c1c5be", "#dbddd9", "#f2f3f2"] },
+      "rule-soft": { "role": "neutral", "displayName": "Soft Rule", "canonical": "#2c302b", "tonalRamp": ["#252824", "#454b43", "#636c60", "#818b7e", "#a0a89e", "#c0c5be", "#daddd9", "#f2f3f2"] },
+      "safe": { "role": "status", "displayName": "Verified Green", "canonical": "#a9c29f", "tonalRamp": ["#232f1e", "#415737", "#5c7d4f", "#79a069", "#9ab88f", "#bccfb4", "#d8e3d3", "#f1f5ef"] },
+      "danger": { "role": "status", "displayName": "Warning Red", "canonical": "#e57a61", "tonalRamp": ["#42150b", "#7b2814", "#af391d", "#dc4e2d", "#e57a61", "#eea796", "#f5cbc2", "#fbede9"] },
+      "focus": { "role": "status", "displayName": "Focus Glow", "canonical": "#ffd38c", "tonalRamp": ["#4d2f00", "#8f5800", "#cc7e00", "#ffa10a", "#ffb947", "#ffd085", "#ffe4b8", "#fff5e5"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page h1 / home hero headline only, e.g. \"СМЕНА УЖЕ ИДЁТ\"." },
+      "headline": { "displayName": "Headline", "purpose": "Section headings such as \"НЕДЕЛЯ В ОДНОМ КОНТУРЕ\" and score-table phase titles." },
+      "title": { "displayName": "Title", "purpose": "Rail/panel headings: current phase name, checklist panel title." },
+      "body": { "displayName": "Body", "purpose": "Lead paragraphs, task copy, descriptive prose; the only sentence-case register." },
+      "label": { "displayName": "Label", "purpose": "Nav items, group labels, IDs, timers, confidence and priority stamps." }
+    },
+    "shadows": [
+      { "name": "deck-shadow", "value": "0 18px 48px rgba(0,0,0,.34), 5px 7px 0 rgba(0,0,0,.16)", "purpose": "Grounds the operations deck and checklist panel." },
+      { "name": "stamp-offset", "value": "3px 4px 0 rgba(0,0,0,.28)", "purpose": "Brand mark and the current round-trace node." },
+      { "name": "button-stamp", "value": "4px 5px 0 #5f3d1d", "purpose": "Primary amber button only." },
+      { "name": "dialog-lift", "value": "12px 16px 0 rgba(0,0,0,.35), 0 28px 70px rgba(0,0,0,.48)", "purpose": "Settings and confirm dialogs, paired with a 3px backdrop blur." }
+    ],
+    "motion": [
+      { "name": "ease-nav-tick", "value": "transform 180ms cubic-bezier(.2,.8,.2,1)", "purpose": "Active nav-link edge bar scaling in." },
+      { "name": "ease-progress", "value": "transform 280ms cubic-bezier(.16,.8,.3,1)", "purpose": "Checklist progress-track fill." },
+      { "name": "ease-sidebar", "value": "transform 220ms cubic-bezier(.16,.8,.3,1)", "purpose": "Off-canvas sidebar drawer slide-in below 820px." },
+      { "name": "ease-checklist-hover", "value": "background 140ms ease-out", "purpose": "Checklist row hover background." },
+      { "name": "signal-pulse", "value": "signal 2.4s ease-out infinite", "purpose": "Live-indicator dot pulse (keyframes signal)." },
+      { "name": "backdrop-in", "value": "backdrop-in 160ms ease-out both", "purpose": "Dialog backdrop fade + blur-in (keyframes backdrop-in)." }
+    ],
+    "breakpoints": [
+      { "name": "deck-collapse", "value": "1120px" },
+      { "name": "drawer", "value": "820px" },
+      { "name": "compact", "value": "560px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single highest-priority action in a view, e.g. \"Open full checklist\".",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Открыть полный чек-лист</button>",
+      "css": ".ds-btn-primary { min-height: 2.85rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem; padding: 0.68rem 1rem; border: 1px solid var(--amber, #e2a14a); border-radius: 0; background: var(--amber, #e2a14a); color: #17120c; font-size: 0.76rem; font-weight: 780; letter-spacing: 0.03em; text-transform: uppercase; box-shadow: 4px 5px 0 #5f3d1d; cursor: pointer; } .ds-btn-primary:hover { background: var(--amber-pale, #f0c67d); } .ds-btn-primary:focus-visible { outline: 3px solid var(--focus, #ffd38c); outline-offset: 3px; }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive confirms, e.g. clearing all checklist progress.",
+      "html": "<button class=\"ds-btn-danger\" type=\"button\">Очистить всё</button>",
+      "css": ".ds-btn-danger { min-height: 2.85rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem; padding: 0.68rem 1rem; border: 1px solid #8d4f40; border-radius: 0; background: transparent; color: #f0aa98; font-size: 0.76rem; font-weight: 780; letter-spacing: 0.03em; text-transform: uppercase; cursor: pointer; } .ds-btn-danger:hover { border-color: var(--danger, #e57a61); background: #321d18; } .ds-btn-danger:focus-visible { outline: 3px solid var(--focus, #ffd38c); outline-offset: 3px; }"
+    },
+    {
+      "name": "Settings Input",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Text/select field inside the settings dialog's two-column form grid.",
+      "html": "<label class=\"ds-field\"><span>Часовой пояс</span><input class=\"ds-input\" type=\"text\" value=\"UTC\" /></label>",
+      "css": ".ds-field { display: grid; gap: 0.4rem; color: #c3b9a6; font-size: 0.76rem; } .ds-input { width: 100%; min-height: 2.7rem; padding: 0.5rem 0.65rem; border: 1px solid var(--rule, #40443d); border-radius: 0; background: #0f110f; color: var(--ink, #e9e6dc); } .ds-input:focus-visible { outline: 3px solid var(--focus, #ffd38c); outline-offset: 3px; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link-active",
+      "description": "Sidebar primary navigation row, resting and active states.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link\" href=\"#\">Сегодня</a><a class=\"ds-nav-link ds-nav-link--active\" href=\"#\">Дуэль альянсов</a></nav>",
+      "css": ".ds-nav { display: grid; } .ds-nav-link { position: relative; display: flex; align-items: center; gap: 0.85rem; min-height: 3.25rem; padding: 0.65rem 1.25rem; border-top: 1px solid transparent; border-bottom: 1px solid transparent; color: var(--muted, #aaa99f); font-size: 0.86rem; font-weight: 650; text-decoration: none; } .ds-nav-link::after { position: absolute; right: 0; top: 0; width: 5px; height: 100%; content: ''; background: var(--amber, #e2a14a); transform: scaleY(0); transition: transform 180ms cubic-bezier(.2,.8,.2,1); } .ds-nav-link:hover { color: var(--ink, #e9e6dc); background: rgba(255,255,255,.025); } .ds-nav-link--active { border-color: var(--rule-soft, #2c302b); color: var(--ink-strong, #fffdf4); background: linear-gradient(90deg, rgba(226,161,74,.11), transparent); } .ds-nav-link--active::after { transform: scaleY(1); }"
+    },
+    {
+      "name": "Checklist Item",
+      "kind": "custom",
+      "refersTo": "checklist-item",
+      "description": "A single today's-operations task row: custom checkbox, confidence dot, source refs, optional overlap badge.",
+      "html": "<li class=\"ds-checklist-item\"><label class=\"ds-checklist-label\"><input type=\"checkbox\" class=\"ds-checklist-input\" /><span class=\"ds-custom-check\" aria-hidden=\"true\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\"><polyline points=\"20 6 9 17 4 12\"/></svg></span><span class=\"ds-task-copy\"><strong>Нанять героев и потратить подготовленные материалы</strong><small><span class=\"ds-confidence-dot ds-confidence-high\"></span>S1</small></span></label><span class=\"ds-overlap-badge\">Совпадение времени</span></li>",
+      "css": ".ds-checklist-item { position: relative; display: flex; align-items: center; gap: 0.65rem; min-height: 3.55rem; padding: 0.55rem 0.7rem; background: #171a17; list-style: none; transition: background 140ms ease-out; } .ds-checklist-item:hover { background: #20231e; } .ds-checklist-label { min-width: 0; flex: 1; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; } .ds-checklist-input { position: absolute; opacity: 0; pointer-events: none; } .ds-custom-check { flex: 0 0 auto; width: 1.65rem; height: 1.65rem; display: grid; place-items: center; border: 1px solid #686a5f; color: transparent; background: #0f110f; } .ds-checklist-input:checked + .ds-custom-check { border-color: var(--safe, #a9c29f); color: #101310; background: var(--safe, #a9c29f); } .ds-checklist-input:focus-visible + .ds-custom-check { outline: 3px solid var(--focus, #ffd38c); outline-offset: 3px; } .ds-task-copy strong { display: block; font-size: 0.86rem; font-weight: 630; line-height: 1.35; } .ds-task-copy small { display: flex; align-items: center; gap: 0.35rem; margin-top: 0.3rem; color: #8f9188; font-family: Consolas, monospace; font-size: 0.58rem; } .ds-confidence-dot { width: 6px; height: 6px; display: inline-block; border-radius: 50%; } .ds-confidence-high { background: var(--safe, #a9c29f); } .ds-overlap-badge { flex: 0 0 auto; display: inline-flex; align-items: center; padding: 0.35rem 0.48rem; border-top: 1px solid var(--amber, #e2a14a); border-bottom: 1px solid var(--amber, #e2a14a); color: var(--amber-pale, #f0c67d); font-size: 0.58rem; font-weight: 700; text-transform: uppercase; }"
+    },
+    {
+      "name": "Confidence Stamp",
+      "kind": "chip",
+      "refersTo": "confidence-stamp",
+      "description": "Source-page confidence badge: bordered top/bottom rule, color-coded, always paired with an uppercase word.",
+      "html": "<span class=\"ds-confidence-stamp ds-confidence-stamp--high\">Высокая уверенность</span>",
+      "css": ".ds-confidence-stamp { display: inline-block; padding: 0.35rem 0.5rem; border-top: 1px solid currentColor; border-bottom: 1px solid currentColor; font-size: 0.62rem; text-transform: uppercase; } .ds-confidence-stamp--high { color: var(--safe, #a9c29f); } .ds-confidence-stamp--medium { color: var(--amber-pale, #f0c67d); } .ds-confidence-stamp--low { color: var(--danger, #e57a61); }"
+    },
+    {
+      "name": "Priority Stamp",
+      "kind": "chip",
+      "refersTo": "priority-p0",
+      "description": "Solid-fill severity block on the verification-queue cards (P0/P1/P2).",
+      "html": "<span class=\"ds-priority ds-priority--p0\">P0</span>",
+      "css": ".ds-priority { display: inline-block; min-width: 2.2rem; padding: 0.25rem; text-align: center; font-family: Consolas, monospace; font-size: 0.65rem; font-weight: 800; } .ds-priority--p0 { background: var(--danger, #e57a61); color: #180a07; } .ds-priority--p1 { background: var(--amber, #e2a14a); color: #17120c; } .ds-priority--p2 { background: var(--steel, #8b9a99); color: #0b1111; }"
+    },
+    {
+      "name": "Round Trace Node",
+      "kind": "custom",
+      "refersTo": "round-trace",
+      "description": "A single node in the six-round Survival Battle timeline: past (filled safe), current (filled amber + stamp shadow), upcoming (hollow).",
+      "html": "<ol class=\"ds-round-trace\"><li class=\"ds-trace-item ds-trace-item--past\"><span class=\"ds-trace-node\"></span><small>08:00</small><strong>Исследование</strong></li><li class=\"ds-trace-item ds-trace-item--current\"><span class=\"ds-trace-node\"></span><small>16:00</small><strong>Усиление героев</strong></li><li class=\"ds-trace-item\"><span class=\"ds-trace-node\"></span><small>20:00</small><strong>Строительство</strong></li></ol>",
+      "css": ".ds-round-trace { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; padding: 0; margin: 0; list-style: none; } .ds-trace-item { position: relative; min-width: 0; display: grid; justify-items: center; gap: 0.42rem; padding: 0 0.22rem; color: var(--muted, #aaa99f); text-align: center; } .ds-trace-node { z-index: 1; width: 15px; height: 15px; border: 2px solid var(--rule, #40443d); border-radius: 50%; background: var(--surface, #171a17); } .ds-trace-item--past .ds-trace-node { border-color: var(--safe, #a9c29f); background: var(--safe, #a9c29f); } .ds-trace-item--current .ds-trace-node { border-color: var(--amber, #e2a14a); background: var(--amber, #e2a14a); box-shadow: 3px 4px 0 rgba(0,0,0,.28); } .ds-trace-item--current { color: var(--ink-strong, #fffdf4); } .ds-trace-item small { font-family: Consolas, monospace; font-size: 0.6rem; } .ds-trace-item strong { min-height: 2.1em; font-size: 0.64rem; font-weight: 650; line-height: 1.25; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Failing Refuge Console",
+    "overview": "The product reads as a wall-mounted operations terminal inside a refuge that is losing the fight against the plague, kept alive by whoever is still monitoring it. It refuses the generic marketing hero: the first thing the visitor sees is not a pitch but a live status — which windows are open right now, what still needs doing before the reset. Every surface below that first read (evidence, planning, sources) stays reachable without breaking the sense that the console is still watching two clocks at once.\n\nThe material language is charcoal steel plate, oxidized copper rivets, and stenciled paper labels lit by a single hazard-amber signal. Structure is asserted with hard 1px rules and hairline dividers instead of soft cards; depth comes from stamped, hard-offset shadows rather than blur. Data (IDs, timers, confidence, source refs) is always set in monospace, as if printed by the terminal itself, while prose stays in a plain system body face. Motion is restrained to signal only: a slow pulse on the live dot, a scroll-into-view on the active round, hard-edged transform transitions — nothing decorative, and everything collapses to near-zero duration under reduced motion.",
+    "keyCharacteristics": [
+      "Live-status-first hierarchy: two event rails and the active checklist outrank any narrative copy.",
+      "Zero border-radius everywhere except literal telemetry dots (live pulse, confidence markers, round-trace nodes).",
+      "Hard, directional \"stamped plate\" shadows instead of soft ambient elevation.",
+      "Monospace (Consolas) exclusively for IDs, timers, and confidence/priority stamps; condensed display face (Bahnschrift) exclusively for uppercase headings and labels.",
+      "Hairline-ruled \"ledger row\" lists (sources, requirements, overlaps) used in place of individual cards."
+    ],
+    "rules": [
+      { "name": "The One Signal Rule", "body": "Hazard amber marks exactly one live/urgent thing per view — the active nav tick, the current countdown, the current round node, the primary CTA. It is never used decoratively or for a second element at once.", "section": "colors" },
+      { "name": "The Confidence Never Rides on Hue Alone Rule", "body": "Every safe/danger/amber status color is always paired with an explicit uppercase text label and, where relevant, an icon — color alone never carries the meaning.", "section": "colors" },
+      { "name": "The Uppercase Placard Rule", "body": "Every display, headline, title, and label string renders uppercase and condensed; body prose is the only sentence-case register in the whole system.", "section": "typography" },
+      { "name": "The Stamped Plate Rule", "body": "Shadows are hard-edged directional offsets, as if a metal plate were riveted onto the surface, never a soft blurred glow — the sole exception is the backdrop blur behind a modal dialog.", "section": "elevation" },
+      { "name": "The Hard Edge Rule", "body": "Every rectangular surface has border-radius: 0; the sole exception is a circular dot or node standing in for a live signal, never a stylistic choice.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do reserve hazard amber for exactly one live/urgent signal per view — active nav tick, live countdown, current round node, or primary CTA.",
+      "Do set every ID, timer, source reference, and confidence/priority stamp in Consolas monospace; never use it for prose.",
+      "Do pair every status color (safe/amber/danger) with an explicit uppercase text label and icon — color alone must never carry meaning.",
+      "Do keep border-radius at 0 on every rectangular surface; circles are reserved for literal live-telemetry dots.",
+      "Do express list data as hairline-ruled ledger rows rather than introducing new card containers.",
+      "Do route every animation and transition through the global prefers-reduced-motion: reduce override, which collapses durations to near-zero."
+    ],
+    "donts": [
+      "Don't add soft, blurred ambient shadows to cards, panels, or buttons — use the flat \"stamped\" hard offset, or no shadow at all; blur is reserved for the modal backdrop.",
+      "Don't introduce a generic marketing hero, gradient mesh, glow, or stock/game photography — the console shows today's status first, by design.",
+      "Don't round the corners of buttons, inputs, tables, chips, or panels.",
+      "Don't let a second amber-accented element compete with the view's one live signal.",
+      "Don't collapse the two live event rails or the active checklist below the fold on first viewport, on any breakpoint."
+    ]
+  }
+}
