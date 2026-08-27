@@ -18,6 +18,13 @@ export interface ChecklistTask {
   sourceIds: string[]
   confidence: 'high' | 'medium' | 'low'
   verificationIds?: string[]
+  tutorial?: TutorialSlide[]
+}
+
+export interface TutorialSlide {
+  id: string
+  imageUrl: string
+  description?: LocalizedText
 }
 
 export interface StockpileItem {

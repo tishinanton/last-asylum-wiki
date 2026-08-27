@@ -49,6 +49,28 @@ public static class ChecklistValidator
             {
                 Add(errors, $"{path}.sourceIds", "At least one source ID is required.");
             }
+
+            if (action.Tutorial is { Count: > 20 })
+            {
+                Add(errors, $"{path}.tutorial", "A tutorial can contain at most 20 slides.");
+            }
+
+            if (action.Tutorial is not null)
+            {
+                for (var slideIndex = 0; slideIndex < action.Tutorial.Count; slideIndex++)
+                {
+                    var slide = action.Tutorial[slideIndex];
+                    var slidePath = $"{path}.tutorial[{slideIndex}]";
+                    ValidateId(slide.Id, $"{slidePath}.id", ids, errors);
+                    if (!IsSafeTutorialUrl(slide.ImageUrl))
+                    {
+                        Add(
+                            errors,
+                            $"{slidePath}.imageUrl",
+                            "Tutorial images must use the local /tutorial-media/ path.");
+                    }
+                }
+            }
         }
 
         for (var planIndex = 0; planIndex < document.Stockpiles.Count; planIndex++)
@@ -131,5 +153,18 @@ public static class ChecklistValidator
         }
 
         messages.Add(message);
+    }
+
+    private static bool IsSafeTutorialUrl(string imageUrl)
+    {
+        if (!imageUrl.StartsWith("/tutorial-media/", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var fileName = imageUrl["/tutorial-media/".Length..];
+        return fileName.Length > 0 &&
+               fileName.IndexOfAny(Path.GetInvalidFileNameChars()) < 0 &&
+               !fileName.Contains("..", StringComparison.Ordinal);
     }
 }

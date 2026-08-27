@@ -206,6 +206,12 @@ Border-radius is `0` on every rectangular surface — buttons, inputs, panels, t
 - **Focus:** the global 3px `--focus` outline with 3px offset — no glow, no border-color shift.
 - **Verified state:** a small `--safe`-colored note line appears beneath a field once its value is confirmed by an in-game source.
 
+### Checklist administration
+- **Day tabs:** a single horizontal phase rail groups Sunday preparation, Duel Days 1–6, every-day actions, and Survival Battle without falsely assigning Survival to a Duel day. On narrow screens the rail scrolls horizontally.
+- **Entry rows:** compact read-only ledger rows show order, localized title, tutorial status, and restrained edit/delete controls. Fields never expand inline inside the list.
+- **Editing:** one focused hard-edged modal owns each action or reserve. Action modals include the ordered tutorial strip with thumbnails, bilingual optional descriptions, upload, reorder, and removal controls.
+- **Tutorial playback:** player-facing instructions open in a protected modal carousel with contained imagery, step count, localized caption, keyboard arrows, and visible previous/next controls.
+
 ### Navigation
 - **Sidebar nav-link:** muted icon + label at rest; hover tints background and brightens text; the active route gets a soft amber-tinted background wash, an amber-tinted icon, and a 5px solid amber bar that scales in on the trailing edge (`scaleY(0 → 1)`, 180ms).
 - **Mobile:** the sidebar becomes a `min(19rem, 88vw)` off-canvas drawer behind a hamburger button; the topbar itself shrinks and hides text labels on utility buttons progressively down to 560px.

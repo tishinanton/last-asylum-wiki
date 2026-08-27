@@ -35,16 +35,20 @@ npm run build
 ```
 
 Операционные данные загружаются при старте из `App_Data/checklist.json` в
-память. Административная страница `#/admin` позволяет менять двуязычный текст,
-добавлять и удалять записи, а также менять порядок действий и запасов. Каждое
-принятое изменение атомарно записывается обратно в JSON-файл; устаревшая
-редакторская сессия не может затереть более новую ревизию.
+память. На административной странице `#/admin` действия и запасы сгруппированы
+по дням Дуэли; каждая запись редактируется в отдельном окне. К действию можно
+добавить упорядоченную мини-инструкцию из изображений JPG, PNG или WebP с
+необязательными описаниями на двух языках. Медиа сохраняются в
+`App_Data/tutorials/` и доступны только для чтения по `/tutorial-media/`.
+Сервер проверяет сигнатуру файла и ограничивает общий объём медиа 200 МБ.
+Каждое принятое изменение атомарно записывается обратно в JSON-файл;
+устаревшая редакторская сессия не может затереть более новую ревизию.
 
 ### Возможности
 
 - текущая фаза Дуэли и шесть стадий Битвы с обратными отсчётами;
 - автоматически обновляемый чек-лист со стабильными ID и серверным JSON;
-- защищённый редактор действий, запасов и их порядка;
+- защищённый редактор с вкладками дней, модальными формами и фотоинструкциями;
 - отдельные настройки неподтверждённых часов и точки отсчёта Битвы;
 - полные таблицы очков, недельный план пересечений, источники и очередь
   проверок;
@@ -97,9 +101,13 @@ npm run build
 ```
 
 Operational data is loaded from `App_Data/checklist.json` into memory at
-startup. The `#/admin` route edits bilingual labels, adds and removes entries,
-and changes action/reserve ordering. Every accepted update is written back to
-the JSON file atomically; a stale editor cannot overwrite a newer revision.
+startup. On `#/admin`, actions and reserves are grouped by Duel day and each
+entry opens in a focused editor. An action can contain an ordered mini tutorial
+made of JPG, PNG, or WebP images with optional bilingual descriptions. Media is
+stored under `App_Data/tutorials/` and served read-only from
+`/tutorial-media/`. The server verifies file signatures and caps total tutorial
+media at 200 MB. Every accepted update is written back to the JSON file
+atomically; a stale editor cannot overwrite a newer revision.
 
 For deployment, publish the ASP.NET Core application to a writable host:
 
@@ -107,9 +115,10 @@ For deployment, publish the ASP.NET Core application to a writable host:
 dotnet publish LastAsylumWiki.csproj -c Release
 ```
 
-Set `Admin__Password` in the deployment environment and persist the
-`App_Data/` directory on writable storage. Static-only hosts such as GitHub
-Pages cannot support the admin API or JSON writes.
+Set `Admin__Password` in the deployment environment and persist the complete
+`App_Data/` directory on writable storage, including tutorial media.
+Static-only hosts such as GitHub Pages cannot support the admin API, JSON
+writes, or image uploads.
 
 ### Documentation
 

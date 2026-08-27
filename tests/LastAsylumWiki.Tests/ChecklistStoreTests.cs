@@ -57,6 +57,94 @@ public sealed class ChecklistStoreTests : IDisposable
         Assert.Equal("second-action", store.GetSnapshot().Actions[0].Id);
     }
 
+    [Fact]
+    public void Validate_RejectsTutorialImagesOutsideLocalMediaPath()
+    {
+        var document = CreateDocument("action-with-tutorial") with
+        {
+            Actions =
+            [
+                new ChecklistAction
+                {
+                    Id = "action-with-tutorial",
+                    EventId = "alliance-duel",
+                    PhaseId = "AD-D1-RAVEN",
+                    Label = new LocalizedText { Ru = "Действие", En = "Action" },
+                    SourceIds = ["S1"],
+                    Confidence = "high",
+                    Tutorial =
+                    [
+                        new TutorialSlide
+                        {
+                            Id = "slide-1",
+                            ImageUrl = "https://example.com/image.webp",
+                        },
+                    ],
+                },
+            ],
+        };
+
+        var errors = ChecklistValidator.Validate(document);
+
+        Assert.Contains("actions[0].tutorial[0].imageUrl", errors.Keys);
+    }
+
+    [Fact]
+    public async Task TutorialImageStore_SavesSupportedImageWithGeneratedName()
+    {
+        var path = Path.Combine(_directory, "tutorials");
+        var store = new TutorialImageStore(path);
+        byte[] image = "RIFF1234WEBP"u8.ToArray();
+        await using var content = new MemoryStream(image);
+
+        var url = await store.SaveAsync(content, "image/webp", content.Length);
+
+        Assert.StartsWith("/tutorial-media/", url);
+        Assert.EndsWith(".webp", url);
+        var storedPath = Path.Combine(path, Path.GetFileName(url));
+        Assert.Equal(image, await File.ReadAllBytesAsync(storedPath));
+    }
+
+    [Fact]
+    public async Task TutorialImageStore_RejectsUnsupportedImageType()
+    {
+        var store = new TutorialImageStore(Path.Combine(_directory, "tutorials"));
+        await using var content = new MemoryStream([1, 2, 3]);
+
+        var error = await Assert.ThrowsAsync<InvalidDataException>(
+            () => store.SaveAsync(content, "image/svg+xml", content.Length));
+
+        Assert.Contains("JPEG, PNG, or WebP", error.Message);
+    }
+
+    [Fact]
+    public async Task TutorialImageStore_RejectsSpoofedImageContent()
+    {
+        var store = new TutorialImageStore(Path.Combine(_directory, "tutorials"));
+        await using var content = new MemoryStream([1, 2, 3, 4]);
+
+        var error = await Assert.ThrowsAsync<InvalidDataException>(
+            () => store.SaveAsync(content, "image/webp", content.Length));
+
+        Assert.Contains("does not match", error.Message);
+    }
+
+    [Fact]
+    public async Task TutorialImageStore_RemovesUnreferencedUpload()
+    {
+        var path = Path.Combine(_directory, "tutorials");
+        var store = new TutorialImageStore(path);
+        byte[] image = "RIFF1234WEBP"u8.ToArray();
+        await using var content = new MemoryStream(image);
+        var url = await store.SaveAsync(content, "image/webp", content.Length);
+        var fileName = Path.GetFileName(url);
+
+        var removed = store.RemoveIfUnreferenced(fileName, CreateDocument("action"));
+
+        Assert.True(removed);
+        Assert.False(File.Exists(Path.Combine(path, fileName)));
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_directory))

@@ -1,31 +1,54 @@
-import {
-  ArrowDown,
-  ArrowUp,
-  CheckCircle2,
-  LogOut,
-  Plus,
-  Save,
-  ShieldCheck,
-  Trash2,
-} from 'lucide-react'
-import { useEffect, useState, type FormEvent } from 'react'
+import { CheckCircle2, LogOut, Plus, Save, ShieldCheck } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { AdminActionModal } from '../components/AdminActionModal'
+import { AdminReserveModal } from '../components/AdminReserveModal'
 import { PageHeader } from '../components/PageHeader'
+import { phaseNames } from '../data/checklist'
 import { parseDailyPlaybook } from '../data/daily-playbook'
-import { phaseNames, themeNames } from '../data/checklist'
 import { localize } from '../i18n'
 import { useApp } from '../state/app-context'
 import { useChecklistData } from '../state/checklist-data-context'
 import type {
   ChecklistTask,
   DailyPlaybookData,
-  EventId,
+  Locale,
   StockpileItem,
+  StockpilePlan,
 } from '../types'
+
+type TabId =
+  | 'AD-PREP-SUNDAY'
+  | 'AD-D1-RAVEN'
+  | 'AD-D2-CONSTRUCTION'
+  | 'AD-D3-TECH'
+  | 'AD-D4-HERO'
+  | 'AD-D5-PREPARATION'
+  | 'AD-D6-RAID'
+  | 'active-day'
+  | 'survival-battle'
+
+interface EditorTarget<T> {
+  value: T
+  isNew: boolean
+}
+
+const phaseTabs: TabId[] = [
+  'AD-PREP-SUNDAY',
+  'AD-D1-RAVEN',
+  'AD-D2-CONSTRUCTION',
+  'AD-D3-TECH',
+  'AD-D4-HERO',
+  'AD-D5-PREPARATION',
+  'AD-D6-RAID',
+  'active-day',
+  'survival-battle',
+]
 
 const copy = {
   ru: {
     title: 'Управление чек-листом',
-    lead: 'Редактируйте действия, списки запасов и порядок их показа.',
+    lead:
+      'Действия сгруппированы по дням Дуэли. Откройте запись, чтобы изменить текст или добавить пошаговую фотоинструкцию.',
     restricted: 'Закрытый контур',
     loginTitle: 'Вход администратора',
     loginLead: 'Введите временный пароль администратора.',
@@ -34,38 +57,44 @@ const copy = {
     signingIn: 'Проверка…',
     invalidPassword: 'Пароль не принят.',
     tooManyAttempts: 'Слишком много попыток. Повторите через минуту.',
+    sessionError: 'Не удалось проверить сеанс администратора.',
+    loadingData: 'Загрузка актуального чек-листа…',
+    loadError: 'Редактирование заблокировано: серверный чек-лист недоступен.',
+    retry: 'Повторить загрузку',
     actions: 'Действия',
-    reserves: 'Запасы на будущие дни',
+    reserves: 'Сохранить к этому дню',
     addAction: 'Добавить действие',
     addReserve: 'Добавить запас',
+    edit: 'Изменить',
+    remove: 'Удалить',
+    moveUp: 'Переместить выше',
+    moveDown: 'Переместить ниже',
+    noActions: 'В этом разделе пока нет действий.',
+    noReserves: 'Для этого дня запасы не назначены.',
+    tutorial: 'Фотоинструкция',
+    noTutorial: 'Без инструкции',
+    photoCount: (count: number) => `${count} фото`,
     save: 'Сохранить изменения',
     saving: 'Сохранение…',
     saved: 'Изменения сохранены',
     unsaved: 'Есть несохранённые изменения',
     logout: 'Выйти',
-    russian: 'Текст на русском',
-    english: 'Текст на английском',
-    event: 'Событие',
-    phase: 'Фаза',
-    theme: 'Тема',
-    general: 'Каждая стадия',
-    activeDay: 'Каждый активный день',
-    moveUp: 'Переместить выше',
-    moveDown: 'Переместить ниже',
-    remove: 'Удалить',
-    deleteConfirm: 'Удалить эту запись?',
     saveError: 'Не удалось сохранить изменения. Проверьте поля и повторите.',
-    conflictError: 'Чек-лист уже изменён в другом окне. Перезагрузите данные перед повторным сохранением.',
-    sessionError: 'Не удалось проверить сеанс администратора.',
-    loadingData: 'Загрузка актуального чек-листа…',
-    loadError: 'Редактирование заблокировано: серверный чек-лист недоступен.',
-    retry: 'Повторить загрузку',
-    alliance: 'Дуэль альянсов',
-    survival: 'Битва за выживание',
+    conflictError:
+      'Чек-лист уже изменён в другом окне. Перезагрузите данные перед повторным сохранением.',
+    deleteAction: 'Удалить это действие?',
+    deleteReserve: 'Удалить этот пункт запасов?',
+    activeDay: 'Каждый день',
+    survival: 'Survival Battle',
+    preparation: 'Воскресенье',
+    day: 'День',
+    phaseNavigation: 'Дни Дуэли и отдельные группы',
+    revision: 'Ревизия',
   },
   en: {
     title: 'Checklist administration',
-    lead: 'Edit actions, future reserves, and their display order.',
+    lead:
+      'Actions are grouped by Duel day. Open an entry to change its text or build a step-by-step photo tutorial.',
     restricted: 'Restricted circuit',
     loginTitle: 'Administrator sign-in',
     loginLead: 'Enter the temporary administrator password.',
@@ -74,72 +103,67 @@ const copy = {
     signingIn: 'Checking…',
     invalidPassword: 'The password was not accepted.',
     tooManyAttempts: 'Too many attempts. Try again in one minute.',
+    sessionError: 'The administrator session could not be checked.',
+    loadingData: 'Loading the current checklist…',
+    loadError: 'Editing is locked because the server checklist is unavailable.',
+    retry: 'Retry loading',
     actions: 'Actions',
-    reserves: 'Future reserves',
+    reserves: 'Save for this day',
     addAction: 'Add action',
     addReserve: 'Add reserve',
+    edit: 'Edit',
+    remove: 'Delete',
+    moveUp: 'Move up',
+    moveDown: 'Move down',
+    noActions: 'No actions in this section yet.',
+    noReserves: 'No reserves assigned to this day.',
+    tutorial: 'Photo tutorial',
+    noTutorial: 'No tutorial',
+    photoCount: (count: number) => `${count} photos`,
     save: 'Save changes',
     saving: 'Saving…',
     saved: 'Changes saved',
     unsaved: 'Unsaved changes',
     logout: 'Sign out',
-    russian: 'Russian text',
-    english: 'English text',
-    event: 'Event',
-    phase: 'Phase',
-    theme: 'Theme',
-    general: 'Every round',
-    activeDay: 'Every active day',
-    moveUp: 'Move up',
-    moveDown: 'Move down',
-    remove: 'Delete',
-    deleteConfirm: 'Delete this entry?',
     saveError: 'Changes could not be saved. Check the fields and try again.',
-    conflictError: 'The checklist changed in another editor. Reload it before saving again.',
-    sessionError: 'The administrator session could not be checked.',
-    loadingData: 'Loading the current checklist…',
-    loadError: 'Editing is locked because the server checklist is unavailable.',
-    retry: 'Retry loading',
-    alliance: 'Alliance Duel',
+    conflictError:
+      'The checklist changed in another editor. Reload it before saving again.',
+    deleteAction: 'Delete this action?',
+    deleteReserve: 'Delete this reserve item?',
+    activeDay: 'Every day',
     survival: 'Survival Battle',
+    preparation: 'Sunday',
+    day: 'Day',
+    phaseNavigation: 'Duel days and separate groups',
+    revision: 'Revision',
   },
 } as const
 
-const alliancePhases = [
-  'AD-PREP-SUNDAY',
-  'AD-D1-RAVEN',
-  'AD-D2-CONSTRUCTION',
-  'AD-D3-TECH',
-  'AD-D4-HERO',
-  'AD-D5-PREPARATION',
-  'AD-D6-RAID',
-]
-
-const survivalThemes = [
-  'SB-BUILD',
-  'SB-TRAIN',
-  'SB-RESEARCH',
-  'SB-RAVEN',
-  'SB-HEROES',
-]
-
-function cloneData(data: DailyPlaybookData): DailyPlaybookData {
-  return structuredClone(data)
+function tabLabel(tab: TabId, locale: Locale) {
+  const text = copy[locale]
+  if (tab === 'AD-PREP-SUNDAY') return text.preparation
+  if (tab === 'active-day') return text.activeDay
+  if (tab === 'survival-battle') return text.survival
+  const day = phaseTabs.indexOf(tab)
+  return `${text.day} ${day}`
 }
 
-function move<T>(items: T[], index: number, offset: -1 | 1): T[] {
-  const target = index + offset
-  if (target < 0 || target >= items.length) return items
-  const next = [...items]
-  ;[next[index], next[target]] = [next[target], next[index]]
-  return next
+function actionBelongsToTab(action: ChecklistTask, tab: TabId) {
+  if (tab === 'survival-battle') return action.eventId === 'survival-battle'
+  if (tab === 'active-day') {
+    return action.eventId === 'alliance-duel' && action.schedule === 'active-day'
+  }
+  return action.eventId === 'alliance-duel' && action.phaseId === tab
 }
 
-function createAction(): ChecklistTask {
+function createAction(tab: TabId): ChecklistTask {
+  const survival = tab === 'survival-battle'
+  const everyDay = tab === 'active-day'
   return {
     id: `admin-action-${crypto.randomUUID()}`,
-    eventId: 'alliance-duel',
-    phaseId: 'AD-D1-RAVEN',
+    eventId: survival ? 'survival-battle' : 'alliance-duel',
+    ...(everyDay ? { schedule: 'active-day' } : {}),
+    ...(!survival && !everyDay ? { phaseId: tab } : {}),
     label: { ru: '', en: '' },
     sourceIds: ['ADMIN'],
     confidence: 'low',
@@ -157,6 +181,26 @@ function createReserve(): StockpileItem {
   }
 }
 
+function move<T>(items: T[], index: number, offset: -1 | 1) {
+  const target = index + offset
+  if (target < 0 || target >= items.length) return items
+  const next = [...items]
+  ;[next[index], next[target]] = [next[target], next[index]]
+  return next
+}
+
+function cloneData(data: DailyPlaybookData) {
+  return structuredClone(data)
+}
+
+function normalizeActionOrder(actions: ChecklistTask[]) {
+  const known = phaseTabs.flatMap((tab) =>
+    actions.filter((action) => actionBelongsToTab(action, tab)),
+  )
+  const knownIds = new Set(known.map((action) => action.id))
+  return [...known, ...actions.filter((action) => !knownIds.has(action.id))]
+}
+
 export function AdminPage() {
   const { state } = useApp()
   const { data, loading, error, reload, replaceData } = useChecklistData()
@@ -169,14 +213,20 @@ export function AdminPage() {
   const [draft, setDraft] = useState(() => cloneData(data))
   const [dirty, setDirty] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [saveState, setSaveState] = useState<'idle' | 'saved' | 'error' | 'conflict'>('idle')
-  const [tab, setTab] = useState<'actions' | 'reserves'>('actions')
+  const [saveState, setSaveState] =
+    useState<'idle' | 'saved' | 'error' | 'conflict'>('idle')
+  const [activeTab, setActiveTab] = useState<TabId>('AD-D1-RAVEN')
+  const [editingAction, setEditingAction] =
+    useState<EditorTarget<ChecklistTask> | null>(null)
+  const [editingReserve, setEditingReserve] =
+    useState<EditorTarget<StockpileItem> | null>(null)
+  const editGeneration = useRef(0)
 
   useEffect(() => {
     void fetch('/api/admin/session', { headers: { Accept: 'application/json' } })
       .then(async (response) => {
         if (!response.ok) throw new Error(`Session check failed with ${response.status}.`)
-        const session = await response.json() as { authorized: boolean }
+        const session = (await response.json()) as { authorized: boolean }
         setAuthorized(session.authorized)
       })
       .catch(() => {
@@ -189,7 +239,17 @@ export function AdminPage() {
     if (!dirty) setDraft(cloneData(data))
   }, [data, dirty])
 
+  const visibleActions = useMemo(
+    () => draft.actions.filter((action) => actionBelongsToTab(action, activeTab)),
+    [activeTab, draft.actions],
+  )
+  const activePlan = useMemo(
+    () => draft.stockpiles.find((plan) => plan.targetPhaseId === activeTab),
+    [activeTab, draft.stockpiles],
+  )
+
   const updateDraft = (next: DailyPlaybookData) => {
+    editGeneration.current += 1
     setDraft(next)
     setDirty(true)
     setSaveState('idle')
@@ -227,6 +287,7 @@ export function AdminPage() {
     }
     setSaving(true)
     setSaveState('idle')
+    const submittedGeneration = editGeneration.current
     try {
       const response = await fetch('/api/admin/checklist', {
         method: 'PUT',
@@ -247,9 +308,14 @@ export function AdminPage() {
       if (!response.ok) throw new Error(`Save failed with status ${response.status}.`)
       const saved = parseDailyPlaybook(await response.json())
       replaceData(saved)
-      setDraft(cloneData(saved))
-      setDirty(false)
-      setSaveState('saved')
+      if (editGeneration.current === submittedGeneration) {
+        setDraft(cloneData(saved))
+        setDirty(false)
+        setSaveState('saved')
+      } else {
+        setDraft((current) => ({ ...current, revision: saved.revision }))
+        setDirty(true)
+      }
     } catch {
       setSaveState('error')
     } finally {
@@ -264,10 +330,53 @@ export function AdminPage() {
     setDraft(cloneData(data))
   }
 
-  const updateAction = (index: number, action: ChecklistTask) => {
+  const replaceAction = (action: ChecklistTask) => {
+    updateDraft({
+      ...draft,
+      actions: normalizeActionOrder(
+        editingAction?.isNew
+          ? [...draft.actions, action]
+          : draft.actions.map((item) => (item.id === action.id ? action : item)),
+      ),
+    })
+    setEditingAction(null)
+  }
+
+  const replaceReserve = (item: StockpileItem) => {
+    if (!activePlan) return
+    const stockpiles = draft.stockpiles.map((plan) =>
+      plan.id === activePlan.id
+        ? {
+            ...plan,
+            items: editingReserve?.isNew
+              ? [...plan.items, item]
+              : plan.items.map((entry) => (entry.id === item.id ? item : entry)),
+          }
+        : plan,
+    )
+    updateDraft({ ...draft, stockpiles })
+    setEditingReserve(null)
+  }
+
+  const updateVisibleActionOrder = (index: number, offset: -1 | 1) => {
+    const target = index + offset
+    if (target < 0 || target >= visibleActions.length) return
+    const firstIndex = draft.actions.findIndex((item) => item.id === visibleActions[index].id)
+    const secondIndex = draft.actions.findIndex(
+      (item) => item.id === visibleActions[target].id,
+    )
     const actions = [...draft.actions]
-    actions[index] = action
-    updateDraft({ ...draft, actions })
+    ;[actions[firstIndex], actions[secondIndex]] = [actions[secondIndex], actions[firstIndex]]
+    updateDraft({ ...draft, actions: normalizeActionOrder(actions) })
+  }
+
+  const updatePlan = (nextPlan: StockpilePlan) => {
+    updateDraft({
+      ...draft,
+      stockpiles: draft.stockpiles.map((plan) =>
+        plan.id === nextPlan.id ? nextPlan : plan,
+      ),
+    })
   }
 
   if (authorized !== true) {
@@ -289,7 +398,11 @@ export function AdminPage() {
                 required
               />
             </label>
-            {loginError && <p className="admin-error" role="alert">{loginError}</p>}
+            {loginError && (
+              <p className="admin-error" role="alert">
+                {loginError}
+              </p>
+            )}
             <button className="button primary" type="submit" disabled={loginPending}>
               {loginPending ? text.signingIn : text.signIn}
             </button>
@@ -322,35 +435,19 @@ export function AdminPage() {
 
       <section className="admin-workbench">
         <div className="admin-toolbar">
-          <div className="admin-tabs" role="tablist">
-            <button
-              className={tab === 'actions' ? 'active' : ''}
-              role="tab"
-              aria-selected={tab === 'actions'}
-              onClick={() => setTab('actions')}
-            >
-              {text.actions} <span>{draft.actions.length}</span>
-            </button>
-            <button
-              className={tab === 'reserves' ? 'active' : ''}
-              role="tab"
-              aria-selected={tab === 'reserves'}
-              onClick={() => setTab('reserves')}
-            >
-              {text.reserves}{' '}
-              <span>{draft.stockpiles.reduce((sum, plan) => sum + plan.items.length, 0)}</span>
-            </button>
+          <div className="admin-revision">
+            <span>{text.revision}</span>
+            <strong>{draft.revision}</strong>
+            {dirty && <em>{text.unsaved}</em>}
           </div>
           <div className="admin-save-actions">
-            <span className={`admin-save-status ${saveState}`}>
+            <span className={`admin-save-status ${saveState}`} role="status">
               {saveState === 'saved'
                 ? text.saved
                 : saveState === 'conflict'
                   ? text.conflictError
-                : saveState === 'error'
-                  ? text.saveError
-                  : dirty
-                    ? text.unsaved
+                  : saveState === 'error'
+                    ? text.saveError
                     : ''}
             </span>
             <button
@@ -369,279 +466,250 @@ export function AdminPage() {
           </div>
         </div>
 
-        {tab === 'actions' ? (
-          <div className="admin-entry-list">
-            {draft.actions.map((action, index) => (
-              <article className="admin-entry" key={action.id}>
-                <div className="admin-entry-order">
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <button
-                    type="button"
-                    aria-label={text.moveUp}
-                    disabled={index === 0}
-                    onClick={() => updateDraft({ ...draft, actions: move([...draft.actions], index, -1) })}
-                  >
-                    <ArrowUp aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={text.moveDown}
-                    disabled={index === draft.actions.length - 1}
-                    onClick={() => updateDraft({ ...draft, actions: move([...draft.actions], index, 1) })}
-                  >
-                    <ArrowDown aria-hidden="true" />
-                  </button>
-                </div>
-                <div className="admin-entry-fields">
-                  <label className="admin-field">
-                    <span>{text.russian}</span>
-                    <input
-                      value={action.label.ru}
-                      onChange={(event) =>
-                        updateAction(index, {
-                          ...action,
-                          label: { ...action.label, ru: event.target.value },
-                        })}
-                      required
-                    />
-                  </label>
-                  <label className="admin-field">
-                    <span>{text.english}</span>
-                    <input
-                      value={action.label.en}
-                      onChange={(event) =>
-                        updateAction(index, {
-                          ...action,
-                          label: { ...action.label, en: event.target.value },
-                        })}
-                      required
-                    />
-                  </label>
-                  <label className="admin-field compact">
-                    <span>{text.event}</span>
-                    <select
-                      value={action.eventId}
-                      onChange={(event) => {
-                        const eventId = event.target.value as EventId
-                        updateAction(index, {
-                          ...action,
-                          eventId,
-                          phaseId: eventId === 'alliance-duel' ? 'AD-D1-RAVEN' : undefined,
-                          themeId: eventId === 'survival-battle' ? 'SB-BUILD' : undefined,
-                          schedule: undefined,
-                        })
-                      }}
-                    >
-                      <option value="alliance-duel">{text.alliance}</option>
-                      <option value="survival-battle">{text.survival}</option>
-                    </select>
-                  </label>
-                  {action.eventId === 'alliance-duel' ? (
-                    <label className="admin-field compact">
-                      <span>{text.phase}</span>
-                      <select
-                        value={action.schedule === 'active-day' ? 'active-day' : action.phaseId}
-                        onChange={(event) =>
-                          updateAction(index, {
-                            ...action,
-                            schedule: event.target.value === 'active-day' ? 'active-day' : undefined,
-                            phaseId: event.target.value === 'active-day' ? undefined : event.target.value,
-                          })}
-                      >
-                        <option value="active-day">{text.activeDay}</option>
-                        {alliancePhases.map((phaseId) => (
-                          <option key={phaseId} value={phaseId}>
-                            {localize(locale, phaseNames[phaseId])}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  ) : (
-                    <label className="admin-field compact">
-                      <span>{text.theme}</span>
-                      <select
-                        value={action.themeId ?? ''}
-                        onChange={(event) =>
-                          updateAction(index, {
-                            ...action,
-                            themeId: event.target.value || undefined,
-                          })}
-                      >
-                        <option value="">{text.general}</option>
-                        {survivalThemes.map((themeId) => (
-                          <option key={themeId} value={themeId}>
-                            {localize(locale, themeNames[themeId])}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  )}
-                </div>
+        <div className="admin-tabs-viewport">
+          <div className="admin-day-tabs" role="tablist" aria-label={text.phaseNavigation}>
+            {phaseTabs.map((tab) => {
+              const count = draft.actions.filter((action) =>
+                actionBelongsToTab(action, tab),
+              ).length
+              return (
                 <button
-                  className="admin-delete"
+                  key={tab}
+                  id={`admin-tab-${tab}`}
+                  className={activeTab === tab ? 'active' : ''}
                   type="button"
-                  aria-label={text.remove}
-                  onClick={() => {
-                    if (window.confirm(text.deleteConfirm)) {
-                      updateDraft({
-                        ...draft,
-                        actions: draft.actions.filter((_, actionIndex) => actionIndex !== index),
-                      })
-                    }
-                  }}
+                  role="tab"
+                  aria-selected={activeTab === tab}
+                  aria-controls="admin-day-panel"
+                  onClick={() => setActiveTab(tab)}
                 >
-                  <Trash2 aria-hidden="true" />
+                  <span>{tabLabel(tab, locale)}</span>
+                  <strong>{count}</strong>
                 </button>
-              </article>
-            ))}
-            <button
-              className="admin-add-row"
-              type="button"
-              onClick={() => updateDraft({ ...draft, actions: [...draft.actions, createAction()] })}
-            >
-              <Plus aria-hidden="true" />
-              {text.addAction}
-            </button>
+              )
+            })}
           </div>
-        ) : (
-          <div className="admin-stockpile-list">
-            {draft.stockpiles.map((plan, planIndex) => (
-              <section className="admin-stockpile" key={plan.id}>
-                <div className="admin-stockpile-heading">
-                  <select
-                    aria-label={text.phase}
-                    value={plan.targetPhaseId}
-                    onChange={(event) => {
-                      const stockpiles = [...draft.stockpiles]
-                      stockpiles[planIndex] = { ...plan, targetPhaseId: event.target.value }
-                      updateDraft({ ...draft, stockpiles })
-                    }}
-                  >
-                    {alliancePhases.filter((phaseId) => phaseId !== 'AD-PREP-SUNDAY').map((phaseId) => (
-                      <option key={phaseId} value={phaseId}>
-                        {localize(locale, phaseNames[phaseId])}
-                      </option>
-                    ))}
-                  </select>
-                  <span>{plan.items.length}</span>
-                </div>
-                <div className="admin-entry-list">
-                  {plan.items.map((item, itemIndex) => (
-                    <article className="admin-entry reserve-entry" key={item.id}>
-                      <div className="admin-entry-order">
-                        <span>{String(itemIndex + 1).padStart(2, '0')}</span>
-                        <button
-                          type="button"
-                          aria-label={text.moveUp}
-                          disabled={itemIndex === 0}
-                          onClick={() => {
-                            const stockpiles = [...draft.stockpiles]
-                            stockpiles[planIndex] = {
-                              ...plan,
-                              items: move([...plan.items], itemIndex, -1),
-                            }
-                            updateDraft({ ...draft, stockpiles })
-                          }}
-                        >
-                          <ArrowUp aria-hidden="true" />
-                        </button>
-                        <button
-                          type="button"
-                          aria-label={text.moveDown}
-                          disabled={itemIndex === plan.items.length - 1}
-                          onClick={() => {
-                            const stockpiles = [...draft.stockpiles]
-                            stockpiles[planIndex] = {
-                              ...plan,
-                              items: move([...plan.items], itemIndex, 1),
-                            }
-                            updateDraft({ ...draft, stockpiles })
-                          }}
-                        >
-                          <ArrowDown aria-hidden="true" />
-                        </button>
-                      </div>
-                      <div className="admin-entry-fields">
-                        <label className="admin-field">
-                          <span>{text.russian}</span>
-                          <input
-                            value={item.label.ru}
-                            onChange={(event) => {
-                              const items = [...plan.items]
-                              items[itemIndex] = {
-                                ...item,
-                                label: { ...item.label, ru: event.target.value },
-                              }
-                              const stockpiles = [...draft.stockpiles]
-                              stockpiles[planIndex] = { ...plan, items }
-                              updateDraft({ ...draft, stockpiles })
-                            }}
-                          />
-                        </label>
-                        <label className="admin-field">
-                          <span>{text.english}</span>
-                          <input
-                            value={item.label.en}
-                            onChange={(event) => {
-                              const items = [...plan.items]
-                              items[itemIndex] = {
-                                ...item,
-                                label: { ...item.label, en: event.target.value },
-                              }
-                              const stockpiles = [...draft.stockpiles]
-                              stockpiles[planIndex] = { ...plan, items }
-                              updateDraft({ ...draft, stockpiles })
-                            }}
-                          />
-                        </label>
-                      </div>
+        </div>
+
+        <div
+          id="admin-day-panel"
+          className="admin-day-panel"
+          role="tabpanel"
+          aria-labelledby={`admin-tab-${activeTab}`}
+        >
+          <section className="admin-list-section" aria-labelledby="admin-actions-title">
+            <header className="admin-section-heading">
+              <div>
+                <h2 id="admin-actions-title">{text.actions}</h2>
+                <span>{visibleActions.length}</span>
+              </div>
+              <button
+                className="button secondary"
+                type="button"
+                onClick={() =>
+                  setEditingAction({ value: createAction(activeTab), isNew: true })
+                }
+              >
+                <Plus aria-hidden="true" size={16} />
+                {text.addAction}
+              </button>
+            </header>
+
+            {visibleActions.length ? (
+              <ol className="admin-display-list">
+                {visibleActions.map((action, index) => (
+                  <li key={action.id}>
+                    <span className="admin-row-index">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <div className="admin-row-copy">
+                      <strong>{localize(locale, action.label)}</strong>
+                      <small>
+                        {action.tutorial?.length
+                          ? `${text.tutorial}: ${text.photoCount(action.tutorial.length)}`
+                          : text.noTutorial}
+                      </small>
+                    </div>
+                    <div className="admin-row-controls">
                       <button
-                        className="admin-delete"
+                        className="admin-order-button"
                         type="button"
-                        aria-label={text.remove}
+                        aria-label={text.moveUp}
+                        disabled={index === 0}
+                        onClick={() => updateVisibleActionOrder(index, -1)}
+                      >
+                        ↑
+                      </button>
+                      <button
+                        className="admin-order-button"
+                        type="button"
+                        aria-label={text.moveDown}
+                        disabled={index === visibleActions.length - 1}
+                        onClick={() => updateVisibleActionOrder(index, 1)}
+                      >
+                        ↓
+                      </button>
+                      <button
+                        className="admin-edit-button"
+                        type="button"
+                        onClick={() =>
+                          setEditingAction({
+                            value: structuredClone(action),
+                            isNew: false,
+                          })
+                        }
+                      >
+                        {text.edit}
+                      </button>
+                      <button
+                        className="admin-remove-button"
+                        type="button"
                         onClick={() => {
-                          if (window.confirm(text.deleteConfirm)) {
-                            const stockpiles = [...draft.stockpiles]
-                            stockpiles[planIndex] = {
-                              ...plan,
-                              items: plan.items.filter((_, index) => index !== itemIndex),
-                            }
-                            updateDraft({ ...draft, stockpiles })
+                          if (window.confirm(text.deleteAction)) {
+                            updateDraft({
+                              ...draft,
+                              actions: draft.actions.filter(
+                                (item) => item.id !== action.id,
+                              ),
+                            })
                           }
                         }}
                       >
-                        <Trash2 aria-hidden="true" />
+                        {text.remove}
                       </button>
-                    </article>
-                  ))}
-                  <button
-                    className="admin-add-row"
-                    type="button"
-                    onClick={() => {
-                      const stockpiles = [...draft.stockpiles]
-                      stockpiles[planIndex] = {
-                        ...plan,
-                        items: [...plan.items, createReserve()],
-                      }
-                      updateDraft({ ...draft, stockpiles })
-                    }}
-                  >
-                    <Plus aria-hidden="true" />
-                    {text.addReserve}
-                  </button>
-                </div>
-              </section>
-            ))}
-          </div>
-        )}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="admin-empty">{text.noActions}</p>
+            )}
+          </section>
 
-        {(saveState === 'saved' || saveState === 'conflict') && (
-          <div className={`admin-saved-banner ${saveState}`} role="status">
-            {saveState === 'saved' && <CheckCircle2 aria-hidden="true" />}
-            {saveState === 'saved' ? text.saved : text.conflictError}
+          {activePlan && (
+            <section className="admin-list-section" aria-labelledby="admin-reserves-title">
+              <header className="admin-section-heading">
+                <div>
+                  <h2 id="admin-reserves-title">{text.reserves}</h2>
+                  <span>{activePlan.items.length}</span>
+                </div>
+                <button
+                  className="button secondary"
+                  type="button"
+                  onClick={() =>
+                    setEditingReserve({ value: createReserve(), isNew: true })
+                  }
+                >
+                  <Plus aria-hidden="true" size={16} />
+                  {text.addReserve}
+                </button>
+              </header>
+
+              {activePlan.items.length ? (
+                <ol className="admin-display-list reserve-list">
+                  {activePlan.items.map((item, index) => (
+                    <li key={item.id}>
+                      <span className="admin-row-index">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <div className="admin-row-copy">
+                        <strong>{localize(locale, item.label)}</strong>
+                        <small>{localize(locale, phaseNames[activePlan.targetPhaseId])}</small>
+                      </div>
+                      <div className="admin-row-controls">
+                        <button
+                          className="admin-order-button"
+                          type="button"
+                          aria-label={text.moveUp}
+                          disabled={index === 0}
+                          onClick={() =>
+                            updatePlan({
+                              ...activePlan,
+                              items: move([...activePlan.items], index, -1),
+                            })
+                          }
+                        >
+                          ↑
+                        </button>
+                        <button
+                          className="admin-order-button"
+                          type="button"
+                          aria-label={text.moveDown}
+                          disabled={index === activePlan.items.length - 1}
+                          onClick={() =>
+                            updatePlan({
+                              ...activePlan,
+                              items: move([...activePlan.items], index, 1),
+                            })
+                          }
+                        >
+                          ↓
+                        </button>
+                        <button
+                          className="admin-edit-button"
+                          type="button"
+                          onClick={() =>
+                            setEditingReserve({
+                              value: structuredClone(item),
+                              isNew: false,
+                            })
+                          }
+                        >
+                          {text.edit}
+                        </button>
+                        <button
+                          className="admin-remove-button"
+                          type="button"
+                          onClick={() => {
+                            if (window.confirm(text.deleteReserve)) {
+                              updatePlan({
+                                ...activePlan,
+                                items: activePlan.items.filter(
+                                  (entry) => entry.id !== item.id,
+                                ),
+                              })
+                            }
+                          }}
+                        >
+                          {text.remove}
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p className="admin-empty">{text.noReserves}</p>
+              )}
+            </section>
+          )}
+        </div>
+
+        {saveState === 'saved' && (
+          <div className="admin-saved-banner saved" role="status">
+            <CheckCircle2 aria-hidden="true" />
+            {text.saved}
           </div>
         )}
       </section>
+
+      {editingAction && (
+        <AdminActionModal
+          key={editingAction.value.id}
+          action={editingAction.value}
+          locale={locale}
+          onClose={() => setEditingAction(null)}
+          onSave={replaceAction}
+        />
+      )}
+      {editingReserve && (
+        <AdminReserveModal
+          key={editingReserve.value.id}
+          item={editingReserve.value}
+          locale={locale}
+          onClose={() => setEditingReserve(null)}
+          onSave={replaceReserve}
+        />
+      )}
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import {
   Archive,
   AlertTriangle,
+  BookOpen,
   Check,
   CheckCircle2,
   Eraser,
@@ -15,6 +16,7 @@ import { useEventStatus } from '../hooks/useEventStatus'
 import { useApp } from '../state/app-context'
 import { useChecklistData } from '../state/checklist-data-context'
 import type { ChecklistTask, EventId } from '../types'
+import { TutorialModal } from './TutorialModal'
 
 interface TodayChecklistProps {
   compact?: boolean
@@ -48,6 +50,7 @@ export function TodayChecklist({ compact = false }: TodayChecklistProps) {
   const { data: dailyPlaybook, error: checklistError } = useChecklistData()
   const status = useEventStatus()
   const [confirmMode, setConfirmMode] = useState<'today' | 'all' | null>(null)
+  const [tutorialTask, setTutorialTask] = useState<ChecklistTask | null>(null)
   const locale = state.preferences.locale
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key)
 
@@ -118,6 +121,16 @@ export function TodayChecklist({ compact = false }: TodayChecklistProps) {
             {t('independentOverlap')}
           </span>
         )}
+        {task.tutorial?.length ? (
+          <button
+            className="tutorial-launch"
+            type="button"
+            onClick={() => setTutorialTask(task)}
+          >
+            <BookOpen aria-hidden="true" size={15} />
+            {locale === 'ru' ? 'Инструкция' : 'Tutorial'}
+          </button>
+        ) : null}
       </li>
     )
   }
@@ -259,6 +272,13 @@ export function TodayChecklist({ compact = false }: TodayChecklistProps) {
             </div>
           </section>
         </div>
+      )}
+      {tutorialTask && (
+        <TutorialModal
+          task={tutorialTask}
+          locale={locale}
+          onClose={() => setTutorialTask(null)}
+        />
       )}
     </section>
   )

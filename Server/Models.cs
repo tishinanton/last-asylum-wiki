@@ -8,6 +8,8 @@ public sealed record ApiMessage(string Message);
 
 public sealed record AdminSessionResponse(bool Authorized);
 
+public sealed record TutorialImageResponse(string Url);
+
 public sealed class LocalizedText
 {
     [JsonPropertyName("ru")]
@@ -53,6 +55,23 @@ public sealed class ChecklistAction
     [JsonPropertyName("verificationIds")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IReadOnlyList<string>? VerificationIds { get; init; }
+
+    [JsonPropertyName("tutorial")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyList<TutorialSlide>? Tutorial { get; init; }
+}
+
+public sealed class TutorialSlide
+{
+    [JsonPropertyName("id")]
+    public required string Id { get; init; }
+
+    [JsonPropertyName("imageUrl")]
+    public required string ImageUrl { get; init; }
+
+    [JsonPropertyName("description")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public LocalizedText? Description { get; init; }
 }
 
 public sealed class StockpileItem

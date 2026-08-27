@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>last-asylum-wiki-local-admin</UserSecretsId>
     <SpaRoot>$(MSBuildProjectDirectory)\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);wwwroot\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,5 +25,8 @@
           Condition="'$(SkipFrontendBuild)' != 'true'">
     <Exec Command="npm install --no-audit --no-fund" Condition="!Exists('$(SpaRoot)node_modules')" />
     <Exec Command="npm run build:client" />
+    <ItemGroup>
+      <Content Include="wwwroot\**" />
+    </ItemGroup>
   </Target>
 </Project>

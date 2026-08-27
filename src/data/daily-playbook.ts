@@ -20,6 +20,15 @@ function isEventId(value: unknown): value is EventId {
   return value === 'alliance-duel' || value === 'survival-battle'
 }
 
+function isTutorialSlide(value: unknown): boolean {
+  return (
+    isRecord(value) &&
+    typeof value.id === 'string' &&
+    typeof value.imageUrl === 'string' &&
+    (value.description === undefined || isLocalizedText(value.description))
+  )
+}
+
 function isConfidence(value: unknown): value is ChecklistTask['confidence'] {
   return value === 'high' || value === 'medium' || value === 'low'
 }
@@ -36,6 +45,8 @@ function isAction(value: unknown): value is ChecklistTask {
     (value.phaseId === undefined || typeof value.phaseId === 'string') &&
     (value.themeId === undefined || typeof value.themeId === 'string') &&
     isLocalizedText(value.label) &&
+    (value.tutorial === undefined ||
+      (Array.isArray(value.tutorial) && value.tutorial.every(isTutorialSlide))) &&
     hasStringArray(value.sourceIds) &&
     isConfidence(value.confidence) &&
     (value.overlapGroups === undefined || hasStringArray(value.overlapGroups)) &&

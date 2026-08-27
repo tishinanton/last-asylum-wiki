@@ -30,3 +30,5 @@ coverage/
 !.env.example
 *.log
 App_Data/*.tmp
+App_Data/tutorials/*
+!App_Data/tutorials/.gitkeep
