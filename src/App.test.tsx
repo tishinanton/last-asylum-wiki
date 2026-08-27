@@ -90,5 +90,7 @@ describe('core application behavior', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Билеты найма выживших')).toBeInTheDocument()
     expect(screen.getByText('Сундуки снаряжения Ворона')).toBeInTheDocument()
+    expect(screen.queryAllByText(/уверенность/i)).toHaveLength(0)
+    expect(screen.queryAllByText(/VB-/)).toHaveLength(0)
   })
 })

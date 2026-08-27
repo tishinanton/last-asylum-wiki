@@ -29,12 +29,6 @@ const alliancePhaseOrder = [
   'AD-D6-RAID',
 ]
 
-const confidenceKeys = {
-  high: 'confidenceHigh',
-  medium: 'confidenceMedium',
-  low: 'confidenceLow',
-} as const
-
 function taskCycleKey(
   task: ChecklistTask,
   keys: { duelCycleKey: string; survivalCycleKey: string },
@@ -115,11 +109,6 @@ export function TodayChecklist({ compact = false }: TodayChecklistProps) {
           <span className="custom-check" aria-hidden="true"><Check size={16} /></span>
           <span className="task-copy">
             <strong>{localize(locale, task.label)}</strong>
-            <small>
-              <span className={`confidence-dot confidence-${task.confidence}`} />
-              {t(confidenceKeys[task.confidence])} · {task.sourceIds.join(' · ')}
-              {task.verificationIds?.length ? ` · ${task.verificationIds.join(', ')}` : ''}
-            </small>
           </span>
         </label>
         {overlaps && (
@@ -205,13 +194,6 @@ export function TodayChecklist({ compact = false }: TodayChecklistProps) {
                 {plan.items.map((item) => (
                   <li key={item.id}>
                     <span>{localize(locale, item.label)}</span>
-                    <small>
-                      <span className={`confidence-dot confidence-${item.confidence}`} />
-                      {t(confidenceKeys[item.confidence])} · {item.sourceIds.join(' · ')}
-                      {item.verificationIds?.length
-                        ? ` · ${item.verificationIds.join(', ')}`
-                        : ''}
-                    </small>
                   </li>
                 ))}
               </ul>

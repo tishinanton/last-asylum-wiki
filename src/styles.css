@@ -879,28 +879,6 @@ main {
   text-decoration-color: #707268;
 }
 
-.task-copy small {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.3rem;
-  color: #8f9188;
-  font-family: Consolas, monospace;
-  font-size: 0.58rem;
-}
-
-.confidence-dot {
-  width: 6px;
-  height: 6px;
-  display: inline-block;
-  border-radius: 50%;
-  background: var(--muted);
-}
-
-.confidence-high { background: var(--safe); }
-.confidence-medium { background: var(--amber); }
-.confidence-low { background: var(--danger); }
-
 .overlap-badge {
   flex: 0 0 auto;
   display: inline-flex;
@@ -966,16 +944,6 @@ main {
   background: var(--rust);
   content: '';
   transform: rotate(45deg);
-}
-
-.stockpile-manifest small {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  margin-top: 0.25rem;
-  color: var(--muted);
-  font-family: Consolas, monospace;
-  font-size: 0.58rem;
 }
 
 .checklist-actions {
